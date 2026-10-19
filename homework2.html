@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework 2 - Wallet Ethereum</title>
+<link rel="stylesheet" href="assets/bootstrap.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script defer src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/js-sha3@0.9.3/build/sha3.min.js"></script>
+<script defer src="assets/hw2.js"></script>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html" aria-current="page">Homework 2</a></nav></div></header>
+<main class="container">
+<h2>Homework 2 - Da seed a indirizzo Ethereum</h2>
+<p class="lead-text">Questo esempio mostra i diversi passaggi che usa un wallet per derivare un indirizzo Ethereum a partire da una frase mnemonica.</p>
+<div class="note"><strong>Attenzione:</strong> usa solo frasi di prova, mai quelle di un wallet reale. Il programma è didattico e carica alcune librerie da Internet.</div>
+<section class="section">
+<h3>1. Prova la derivazione</h3>
+<div class="mb-3"><label for="hw2Mnemonic">Frase mnemonica BIP-39</label><textarea id="hw2Mnemonic" class="form-control mono" rows="2" spellcheck="false"></textarea></div>
+<div class="row g-3">
+<div class="col-md-6"><label for="hw2Passphrase">Passphrase opzionale</label><input id="hw2Passphrase" type="password" autocomplete="off" class="form-control"></div>
+<div class="col-md-6"><label for="hw2Path">Derivation path</label><input id="hw2Path" type="text" class="form-control mono" value="m/44'/60'/0'/0/0"></div>
+</div>
+<div class="d-flex flex-wrap gap-2 mt-3"><button id="hw2BtnDerive" type="button" class="btn btn-primary">Calcola</button><button id="hw2BtnGen12" type="button" class="btn btn-outline-secondary">12 parole casuali</button><button id="hw2BtnGen24" type="button" class="btn btn-outline-secondary">24 parole casuali</button><button id="hw2BtnVecTest" type="button" class="btn btn-outline-secondary">Esempio standard</button></div>
+<div class="alert alert-danger mt-3 d-none" id="hw2ErrorAlert" role="alert"></div>
+</section>
+<section class="section">
+<h3>2. Passaggi della pipeline</h3>
+<div class="step"><h4>BIP-39: mnemonic ed entropia</h4><p>Le parole rappresentano dei bit casuali con un checksum calcolato usando SHA-256.</p><div class="step-output" id="hw2OutStep1">-</div></div>
+<div class="step"><h4>BIP-39: seed</h4><p>Il seed è ricavato con PBKDF2-HMAC-SHA512, 2048 iterazioni.</p><div class="step-output" id="hw2OutStep2">-</div></div>
+<div class="step"><h4>BIP-32 e BIP-44: chiave privata</h4><p>Il seed genera una master key, da cui si deriva una chiave seguendo il percorso <code id="hw2OutCurrentPath">m/44'/60'/0'/0/0</code>.</p><button type="button" id="hw2ToggleSecrets" class="btn btn-sm btn-outline-secondary mb-2" aria-pressed="false">Mostra i valori riservati</button><div class="step-output" id="hw2OutStep3">-</div></div>
+<div class="step"><h4>secp256k1: chiave pubblica</h4><p>La chiave pubblica si ottiene con Q = kG.</p><div class="step-output" id="hw2OutStep4">-</div></div>
+<div class="step"><h4>Keccak-256: indirizzo</h4><p>Si fa l'hash dei 64 byte della chiave pubblica senza prefisso e si prendono gli ultimi 20 byte.</p><div class="step-output" id="hw2OutStep5">-</div></div>
+<div class="step"><h4>EIP-55: checksum</h4><p>Alcune lettere dell'indirizzo esadecimale diventano maiuscole per aiutare a riconoscere errori di trascrizione.</p><div class="result mono" id="hw2OutStep6">-</div></div>
+</section>
+<section class="section">
+<h3>3. Più indirizzi dallo stesso seed</h3>
+<p class="small-note">Variando l'ultimo indice del percorso BIP-44 si ottengono altri indirizzi dello stesso account.</p>
+<div class="table-responsive"><table class="table table-sm table-bordered"><thead><tr><th>Indice</th><th>Percorso</th><th>Indirizzo</th></tr></thead><tbody id="hw2ManyAccountsTable" class="mono"></tbody></table></div>
+</section>
+<section class="section">
+<h3>4. Controllo di un indirizzo EIP-55</h3>
+<div class="row g-2 align-items-end"><div class="col-lg-7"><label for="hw2AddrInput">Indirizzo</label><input id="hw2AddrInput" type="text" class="form-control mono" placeholder="0x..."></div><div class="col-auto"><button type="button" id="hw2BtnCheckAddr" class="btn btn-primary">Verifica</button></div><div class="col-auto"><button type="button" id="hw2BtnAddTypo" class="btn btn-outline-secondary">Simula un errore</button></div></div><div class="mt-3" id="hw2AddrValidationStatus"></div>
+</section>
+<section class="section">
+<h3>5. Confronto tra funzioni hash</h3>
+<p>Keccak-256 e SHA3-256 usano la stessa permutazione, ma non lo stesso padding. Quindi, a parità di input, otteniamo risultati diversi.</p>
+<div class="row g-2 align-items-center"><div class="col-md-8"><label for="hw2HashTestInput">Testo da calcolare</label><input type="text" id="hw2HashTestInput" class="form-control mono" value="hello"></div><div class="col-md-4 pt-3"><label class="fw-normal"><input id="hw2HashIsHex" type="checkbox"> Interpreta come esadecimale</label></div></div>
+<div class="table-responsive mt-3"><table class="table table-sm table-bordered"><thead><tr><th>Algoritmo</th><th>Hash</th></tr></thead><tbody class="mono"><tr><td>Keccak-256</td><td id="outH_keccak">-</td></tr><tr><td>SHA3-256</td><td id="outH_sha3">-</td></tr><tr><td>SHA-256</td><td id="outH_sha256">-</td></tr><tr><td>SHA-512</td><td id="outH_sha512">-</td></tr></tbody></table></div>
+</section>
+<section class="section">
+<h3>6. Test statistico sull'effetto valanga</h3>
+<p>Modifichiamo un bit di input e contiamo quanti bit cambiano nell'hash Keccak-256. In media ci aspettiamo circa 128 bit cambiati su 256.</p>
+<div class="d-flex flex-wrap gap-2 align-items-end mb-3"><div><label for="hw2StatTrials">Numero di prove</label><input id="hw2StatTrials" type="number" min="50" max="1500" class="form-control" value="400" style="width:110px"></div><button id="hw2BtnRunStats" type="button" class="btn btn-primary">Esegui test</button></div>
+<div class="row g-3"><div class="col-lg-6"><h4>Bit cambiati</h4><canvas id="hw2CvAvalanche" class="chart" width="480" height="240"></canvas></div><div class="col-lg-6"><h4>Frequenza degli 1</h4><canvas id="hw2CvBits" class="chart" width="480" height="240"></canvas></div></div>
+<p class="small-note mt-2" id="hw2StatSummary">Premi Esegui test per mostrare i risultati.</p>
+</section>
+<section class="section">
+<h3>7. A cosa servono gli algoritmi</h3>
+<div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th>Componente</th><th>Funzione</th></tr></thead><tbody>
+<tr><td>BIP-39</td><td>Rappresenta l'entropia in parole e ricava un seed. Comprende anche un checksum per le parole.</td></tr>
+<tr><td>BIP-32</td><td>Deriva molte chiavi in modo deterministico dalla stessa master key.</td></tr>
+<tr><td>BIP-44</td><td>Definisce un percorso standard per organizzare account e indirizzi.</td></tr>
+<tr><td>secp256k1</td><td>Collega chiave privata e chiave pubblica; serve anche per le firme digitali.</td></tr>
+<tr><td>Keccak-256</td><td>Produce l'hash usato per ottenere l'indirizzo Ethereum.</td></tr>
+<tr><td>EIP-55</td><td>Codifica il checksum nell'uso di maiuscole e minuscole dell'indirizzo.</td></tr>
+</tbody></table></div>
+<p>La <strong>generazione</strong> usa entropia casuale per creare un nuovo segreto. La <strong>derivazione</strong> usa quel segreto per ottenere sempre le stesse chiavi. L'<strong>encoding</strong> cambia la rappresentazione dei dati, mentre il <strong>checksum</strong> serve a rilevare errori. Nessuno di questi meccanismi fa da solo il lavoro degli altri.</p>
+</section>
+<section class="section">
+<h3>8. Cenni storici</h3>
+<p><strong>1977:</strong> RSA. <strong>2000:</strong> secp256k1 (SEC 2). <strong>2001:</strong> SHA-2. <strong>2012:</strong> BIP-32 e scelta di Keccak per SHA-3. <strong>2013:</strong> BIP-39. <strong>2014:</strong> BIP-44. <strong>2015:</strong> SHA-3 standardizzato e lancio di Ethereum. <strong>2016:</strong> EIP-55.</p>
+<p>SHA-2 (per esempio SHA-512) e Keccak sono famiglie diverse di funzioni hash. SHA-3 deriva da Keccak, ma SHA3-256 e il Keccak-256 utilizzato da Ethereum differiscono per la separazione di dominio e il padding. Per questo non sono intercambiabili.</p>
+<p>Ethereum usa più strumenti perché la gestione delle chiavi, le firme, il calcolo degli hash e il rilevamento degli errori richiedono proprietà diverse. Le analisi statistiche aiutano a osservare il comportamento degli algoritmi, ma non sono sufficienti a provarne la sicurezza.</p>
+</section>
+</main>
+<footer><div class="container">Homework 2 · Solo per prove, non usare wallet reali</div></footer>
+</body>
+</html>

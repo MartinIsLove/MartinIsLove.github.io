@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework - ECC e cifrario di Cesare</title>
+<style>
+.code-value{padding:8px 10px;background:#f7f8fa;border:1px solid #e0e3e8;border-radius:4px;font-family:Consolas,Monaco,monospace;overflow-wrap:anywhere;font-size:.82rem;min-height:35px;white-space:pre-wrap}
+.grid-label{font-weight:600;font-size:.87rem;color:#465261;margin:12px 0 4px}
+#caesarBest{white-space:pre-wrap;font-size:.9rem}
+#frequencyChart{width:100%;max-width:800px}
+.output-wrap{max-height:160px;overflow:auto}
+.anchor-nav a{margin-right:13px;font-size:.9rem}
+.table-compact{font-size:.84rem}
+</style>
+<style>
+
+:root{font-family:Arial,Helvetica,sans-serif;color:#24292f;background:#f8f9fa;line-height:1.5}*{box-sizing:border-box}body{margin:0;font-size:15px}header{background:white;border-bottom:1px solid #dce0e5}header .container{padding-top:14px;padding-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}header h1{font-size:19px;margin:0}nav{display:flex;gap:15px;flex-wrap:wrap}a{color:#1559a2;text-decoration:none}a:hover{text-decoration:underline}nav a{font-size:14px;color:#46576a}nav a[aria-current=page]{font-weight:bold;color:#1559a2}.container{max-width:1020px;margin:auto;padding:0 22px}main{padding-top:28px!important;padding-bottom:42px!important}h2{font-size:23px;margin:0 0 14px}h3{font-size:18px;margin:0 0 13px}h4{font-size:16px;margin:0 0 10px}p{margin:0 0 13px}section.section,.section{background:white;padding:19px 20px;border:1px solid #e0e4e8;border-radius:5px;margin-top:18px}.note{border-left:3px solid #8295aa;padding:12px 15px;background:#eef2f6;color:#444;font-size:14px}.lead-text,.small-note{color:#606873}.small-note{font-size:13px}.small{font-size:13px!important}.row{display:flex;flex-wrap:wrap;margin-left:-9px;margin-right:-9px;row-gap:14px}.row>*{padding-left:9px;padding-right:9px;min-width:0;flex:1 0 100%}.col-auto{flex:0 0 auto}.col-6{flex:0 0 50%}@media(min-width:576px){.col-sm-3{flex:0 0 25%}.col-sm-4{flex:0 0 33.333%}.col-sm-5{flex:0 0 41.6667%}.col-sm-9{flex:0 0 75%}}@media(min-width:768px){.col-md-3{flex:0 0 25%}.col-md-4{flex:0 0 33.333%}.col-md-6{flex:0 0 50%}.col-md-8{flex:0 0 66.666%}}@media(min-width:992px){.col-lg-3{flex:0 0 25%}.col-lg-6{flex:0 0 50%}.col-lg-7{flex:0 0 58.333%}.col-lg-9{flex:0 0 75%}}.g-2{row-gap:8px}.g-3{row-gap:13px}.g-4{row-gap:19px}.form-control,.form-select,textarea,input,select{display:block;width:100%;padding:8px 10px;border:1px solid #cdd3da;border-radius:4px;background:white;color:#222;font:inherit}textarea{resize:vertical}label{font-size:14px;font-weight:600;display:block;margin-bottom:5px}input[type=checkbox]{display:inline;width:auto}.btn,button{border-radius:4px;border:1px solid #cbd2d9;background:#f8f9fa;color:#252d35;padding:8px 13px;font:inherit;font-size:14px;cursor:pointer}.btn:hover,button:hover{filter:brightness(.96)}button:disabled{opacity:.55;cursor:wait}.btn-primary{background:#225d9c;border-color:#225d9c;color:white}.btn-outline-primary{background:white;border-color:#225d9c;color:#225d9c}.btn-outline-secondary{background:white;border-color:#9aa2ac;color:#44515d}.btn-outline-danger{background:white;border-color:#aa3c3c;color:#aa3c3c}.btn-sm{padding:5px 9px;font-size:13px}.w-100{width:100%}.d-flex{display:flex}.flex-wrap{flex-wrap:wrap}.align-items-center{align-items:center}.align-items-end{align-items:flex-end}.gap-2{gap:8px}.gap-3{gap:12px}.mt-1{margin-top:5px!important}.mt-2{margin-top:11px!important}.mt-3{margin-top:17px!important}.mt-4{margin-top:23px!important}.mb-0{margin-bottom:0!important}.mb-2{margin-bottom:12px!important}.mb-3{margin-bottom:17px!important}.mono,code,pre,.code-value,.step-output{font-family:Consolas,'Courier New',monospace;overflow-wrap:anywhere}.code-value,.step-output,.output{padding:9px 11px;border-radius:4px;border:1px solid #e2e5e8;background:#f8fafc;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.result{padding:12px 14px;border:1px solid #c9dceb;border-radius:4px;background:#f2f7fb;overflow-wrap:anywhere}.fw-bold{font-weight:700}.text-danger{color:#ad3131!important}.text-success{color:#286d3d!important}.text-muted{color:#687480!important}.text-primary{color:#225d9c!important}.d-none{display:none!important}.table-responsive{overflow-x:auto}.table{width:100%;border-collapse:collapse;font-size:14px;margin:0}.table th,.table td{border:1px solid #e1e5e9;text-align:left;padding:7px 9px;vertical-align:top}.table th{background:#f4f6f8}.table-sm td,.table-sm th{padding:5px 8px}.chart,canvas{max-width:100%;height:auto;background:white;border:1px solid #e2e5e9;border-radius:3px}.chart{display:block;width:100%}#eccCanvas{width:100%}#logList{max-height:380px;overflow:auto;border:1px solid #e1e5e9}#logList .list-group-item{display:block;text-align:left;width:100%;background:#fff;border:0;border-bottom:1px solid #eee;padding:8px 10px;border-radius:0;font-size:13px}#logList .list-group-item.active{background:#e7f0f9}.list-group-item .d-flex{justify-content:space-between;gap:10px}.step{padding:12px 0;border-top:1px solid #eee}.step h4{margin-bottom:5px}.step-output>div+div{margin-top:6px}.secret-blur{filter:blur(5px);user-select:none}.grid-label{font-size:13px;font-weight:bold;color:#465261;margin:14px 0 4px}.anchor-nav a{display:inline-block;margin-right:12px;font-size:14px}footer{border-top:1px solid #e1e5e9;padding:17px 0;color:#66707c;font-size:13px}strong{font-weight:700}code{font-size:.9em}body a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #85b5e6;outline-offset:2px}@media(max-width:600px){.container{padding-left:15px;padding-right:15px}main{padding-top:18px!important}.section{padding:15px!important}header h1{font-size:17px}nav{gap:10px}}
+
+</style>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Wallet Ethereum</a><a href="ecc_caesar.html" aria-current="page">ECC e Cesare</a></nav></div></header>
+<main class="container">
+<h2>Homework - ECC, Caesar Cipher e crittoanalisi</h2>
+<p class="lead-text">Confrontiamo due sistemi di cifratura, proviamo a decifrare un messaggio e vediamo perché uno spazio delle chiavi troppo piccolo non è sicuro.</p>
+<div class="note">Nel precedente esercizio abbiamo usato la curva <strong>y² = x³ + 7 (mod 17)</strong>, che è soltanto un esempio in piccolo. Qui usiamo le operazioni sulla <strong>vera secp256k1</strong>, ma scegliamo deliberatamente una chiave privata tra 1 e 2000 per poterla trovare con una ricerca esaustiva. Nessuno dei due esperimenti rappresenta un sistema pronto per l'uso reale.</div>
+<p class="anchor-nav mt-3"><a href="#ecc">1. ECC</a><a href="#caesar">2. Cesare</a><a href="#frequency">3. Attacco statistico</a><a href="#samples">4. Test sulle lunghezze</a><a href="#comparison">5. Confronto</a></p>
+<section class="section" id="ecc">
+<h3>1. Cifratura e decifratura con ECC</h3>
+<p>La curva <code>secp256k1</code> viene utilizzata per ricavare un segreto condiviso. Poi trasformiamo quel segreto in una chiave AES attraverso HKDF-SHA256. Con AES-GCM cifriamo il testo. È un semplice schema ibrido ispirato a ECIES, non una caratteristica di secp256k1 da sola.</p>
+<div class="row g-3 align-items-end">
+<div class="col-sm-3"><label for="eccPrivate">Chiave privata d (1–2000)</label><input id="eccPrivate" class="form-control" type="number" value="17" min="1" max="2000" step="1"></div>
+<div class="col-sm-9"><label for="eccPlain">Messaggio</label><input id="eccPlain" class="form-control" type="text" value="MEET ME AT THE LIBRARY AT NINE"></div>
+</div>
+<div class="mt-3"><button id="eccEncrypt" class="btn btn-primary" type="button">Cifra con la chiave pubblica</button></div>
+<div id="eccStatus" class="small-note mt-2"></div>
+<p class="grid-label">Chiave pubblica Q = dG (65 byte, punto non compresso)</p>
+<div class="code-value" id="eccPublic">—</div>
+<p class="grid-label">Punto effimero R = rG (pubblico)</p>
+<div class="code-value" id="eccEphemeral">—</div>
+<p class="grid-label">IV casuale (12 byte)</p>
+<div class="code-value" id="eccIv">—</div>
+<p class="grid-label">Messaggio cifrato AES-GCM (hex, incluso tag di autenticazione)</p>
+<div class="code-value output-wrap" id="eccCiphertext">—</div>
+<div class="row g-3 mt-1 align-items-end">
+<div class="col-sm-4"><label for="eccPrivateDecrypt">Chiave privata per decifrare</label><input id="eccPrivateDecrypt" class="form-control" type="number" value="17" min="1" max="2000"></div>
+<div class="col-sm-5"><button id="eccDecrypt" class="btn btn-outline-primary" type="button">Decifra</button></div>
+</div>
+<p class="grid-label">Testo recuperato</p>
+<div class="result mono" id="eccDecrypted">—</div>
+<h4 class="mt-4">Attacco con ricerca della chiave</h4>
+<p>Chi attacca conosce <code>G</code> e la chiave pubblica <code>Q</code>. Prova <code>d = 1, 2, 3, …</code> finché <code>dG = Q</code>, poi usa la chiave trovata per decifrare. Non viene usata la frequenza delle lettere.</p>
+<div class="row g-2 align-items-end">
+<div class="col-sm-4"><label for="eccAttackLimit">Ultima chiave da provare</label><input id="eccAttackLimit" class="form-control" type="number" value="500" min="1" max="2000"></div>
+<div class="col-sm-5"><button id="eccAttack" class="btn btn-outline-danger" type="button">Prova l'attacco ECC</button></div>
+</div>
+<div class="row g-3 mt-1">
+<div class="col-sm-3"><p class="grid-label">Chiave recuperata</p><div class="code-value" id="eccRecovered">—</div></div>
+<div class="col-sm-9"><p class="grid-label">Risultato della ricerca</p><div class="code-value" id="eccAttackInfo">—</div></div>
+</div>
+<div id="eccAttackStatus" class="small-note mt-2"></div>
+<p class="small-note mt-3">La chiave effimera <code>r</code> viene generata casualmente su tutto il gruppo; è la chiave privata <code>d</code> ad essere limitata per l'esperimento. Cambiare <code>r</code> e IV rende normalmente diverso il testo cifrato anche quando il messaggio rimane uguale.</p>
+</section>
+<section class="section" id="caesar">
+<h3>2. Cifrario di Cesare</h3>
+<p>Ogni lettera viene spostata di <code>k</code> posizioni nell'alfabeto. Le altre cifre e la punteggiatura restano uguali. La decifratura usa lo spostamento contrario.</p>
+<div class="row g-3">
+<div class="col-lg-9"><label for="caesarPlain">Messaggio (può essere lo stesso usato con ECC)</label><textarea id="caesarPlain" class="form-control" rows="3">MEET ME AT THE LIBRARY AT NINE</textarea></div>
+<div class="col-lg-3"><label for="caesarKey">Chiave k (0–25)</label><input id="caesarKey" type="number" min="0" max="25" step="1" value="3" class="form-control"></div>
+</div>
+<div class="d-flex gap-2 mt-3 flex-wrap"><button id="caesarEncrypt" type="button" class="btn btn-primary">Cifra</button><button id="caesarDecrypt" type="button" class="btn btn-outline-secondary">Decifra</button></div>
+<div id="caesarStatus" class="small-note mt-2"></div>
+<div class="row g-3 mt-1">
+<div class="col-md-6"><label for="caesarCipher">Testo cifrato (modificabile)</label><textarea id="caesarCipher" class="form-control mono" rows="4"></textarea></div>
+<div class="col-md-6"><label for="caesarDecoded">Testo decifrato</label><textarea id="caesarDecoded" class="form-control mono" rows="4" readonly></textarea></div>
+</div>
+<p class="small-note mt-3">Formule, con A = 0 e Z = 25: <code>c = (m + k) mod 26</code>, <code>m = (c - k) mod 26</code>. Il cifrario ha solo 26 chiavi, compresa k = 0 che non modifica il messaggio.</p>
+</section>
+<section class="section" id="frequency">
+<h3>3. Attacco statistico al cifrario di Cesare</h3>
+<p>Per ogni chiave possibile da 0 a 25, decifriamo il testo e confrontiamo le frequenze delle lettere ottenute con quelle tipiche dell'inglese. Scegliamo la chiave con il valore di <strong>χ² più basso</strong>. La tabella mostra i migliori tentativi: non è necessario conoscere la chiave originale.</p>
+<div class="mb-3"><button id="caesarAttack" type="button" class="btn btn-primary">Trova la chiave con le frequenze</button></div>
+<div class="result mono" id="caesarBest">—</div>
+<div class="table-responsive mt-3"><table class="table table-sm table-bordered table-compact"><thead><tr><th>Posizione</th><th>Chiave</th><th>χ²</th><th>Anteprima del testo</th></tr></thead><tbody id="caesarRank"></tbody></table></div>
+<h4 class="mt-3">Frequenza delle lettere del testo migliore</h4>
+<canvas id="frequencyChart" class="chart" width="720" height="215"></canvas>
+<p class="small-note mt-2"><span style="color:#94a3b8">■</span> Frequenze attese in inglese · <span style="color:#2563a6">■</span> Frequenze misurate dopo la decifratura. Con pochi caratteri il confronto è spesso poco affidabile.</p>
+<p class="small-note">Formula: <code>χ² = Σ (Oᵢ − Eᵢ)² / Eᵢ</code>, dove Oᵢ è il numero osservato per una lettera ed Eᵢ il numero atteso secondo la frequenza inglese.</p>
+</section>
+<section class="section" id="samples">
+<h3>4. Esperimento: testi di lunghezza diversa</h3>
+<p>Applichiamo 12 cifrature a porzioni di un corpus in lingua inglese per ogni lunghezza. L'algoritmo prova sempre le 26 chiavi e verifica quante volte quella con χ² minimo è davvero la chiave usata.</p>
+<label for="testCorpus">Corpus inglese di riferimento (puoi modificarlo)</label>
+<textarea id="testCorpus" class="form-control" rows="5"></textarea>
+<div class="mt-3"><button id="testButton" type="button" class="btn btn-primary">Ripeti esperimento</button></div>
+<div class="table-responsive mt-3"><table class="table table-sm table-bordered"><thead><tr><th>Lettere per testo</th><th>Prove</th><th>Chiavi corrette</th><th>Successo</th></tr></thead><tbody id="testResults"></tbody></table></div>
+<p class="small-note" id="testExplanation"></p>
+<p>Il metodo di solito migliora quando il testo è più lungo e rispecchia le frequenze normali della lingua. Su messaggi brevi, nomi propri, stringhe artificiali o testi di un'altra lingua, la chiave con il χ² minimo può essere sbagliata. Anche il corpus usato per misurare il successo influisce sul risultato.</p>
+</section>
+<section class="section" id="comparison">
+<h3>5. Confronto e conclusioni</h3>
+<div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th>Caratteristica</th><th>Caesar Cipher</th><th>ECC ibrido dell'esercizio</th></tr></thead><tbody>
+<tr><td>Tipo di chiavi</td><td>Una chiave condivisa per cifrare e decifrare.</td><td>Chiave pubblica Q = dG per cifrare e privata d per decifrare; viene anche usato un valore effimero casuale r.</td></tr>
+<tr><td>Cifratura</td><td>Spostamento delle lettere modulo 26.</td><td>ECDH per ottenere un segreto, HKDF per la chiave, AES-GCM per cifrare il messaggio.</td></tr>
+<tr><td>Decifratura</td><td>Spostamento inverso della stessa chiave.</td><td>ECDH con la chiave privata d e R, poi derivazione della stessa chiave AES e decifratura autenticata.</td></tr>
+<tr><td>Spazio delle chiavi</td><td>26 valori, 25 non banali.</td><td>Nel nostro test solo 2000 valori per d. Nel sistema completo ci sarebbero circa 2²⁵⁶ possibili scalari validi.</td></tr>
+<tr><td>Proprietà statistiche</td><td>Ogni lettera viene sempre sostituita con la stessa lettera. Le frequenze vengono solo spostate.</td><td>Con r e IV nuovi, ciphertext diversi per lo stesso messaggio. La distribuzione delle lettere del testo originale non è visibile direttamente.</td></tr>
+<tr><td>Attacco</td><td>Prova di tutte le 26 chiavi e scelta tramite frequenze della lingua.</td><td>Ricerca esaustiva della chiave privata limitata confrontando dG con la chiave pubblica Q.</td></tr>
+</tbody></table></div>
+<h4>Perché gli attacchi sono diversi?</h4>
+<p>Nel cifrario di Cesare il problema non è soltanto la piccola dimensione della chiave: anche la struttura del testo resta riconoscibile. Per questo le statistiche delle lettere possono aiutare a trovare la soluzione senza conoscere prima la chiave. Se vogliamo, possiamo anche provare tutte le 26 chiavi e leggere i risultati.</p>
+<p>Nello schema ECC la crittoanalisi non cerca lettere comuni, ma sfrutta un errore nella scelta delle chiavi. Poiché d è limitato a pochissimi valori, un attaccante può calcolare dG per ciascuno e trovare la chiave privata a partire da quella pubblica. Con chiavi secp256k1 generate correttamente nell'intero spazio ammesso, la stessa enumerazione non è praticabile. L'attacco generico più noto al logaritmo discreto richiede nell'ordine di 2¹²⁸ operazioni, non 2000.</p>
+<h4>Limiti del modello</h4>
+<p>La piccolezza del dominio privato è una debolezza introdotta apposta nell'esercizio, non una proprietà insicura di secp256k1. La cifratura di questo sito è una dimostrazione semplificata: non implementa tutte le verifiche e le regole di un protocollo crittografico standard completo, quindi non dovrebbe essere usata per proteggere dati reali.</p>
+<p class="small-note">Fonti principali: <a href="https://www.secg.org/sec2-v2.pdf" target="_blank" rel="noopener noreferrer">SEC 2 (secp256k1)</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey" target="_blank" rel="noopener noreferrer">Web Crypto HKDF</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt" target="_blank" rel="noopener noreferrer">Web Crypto AES-GCM</a>.</p>
+</section>
+</main>
+<footer><div class="container">Esperimento didattico · ECC e Cesare · 2026</div></footer>
+<script>
+'use strict';
+
+const SECP = Object.freeze({
+  p: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2Fn,
+  n: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n,
+  G: {
+    x: 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n,
+    y: 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n
+  }
+});
+
+const enFrequency = [8.167,1.492,2.782,4.253,12.702,2.228,2.015,6.094,6.966,0.153,0.772,4.025,2.406,6.749,7.507,1.929,0.095,5.987,6.327,9.056,2.758,0.978,2.360,0.150,1.974,0.074];
+const $ = id => document.getElementById(id);
+const modP = a => ((a % SECP.p) + SECP.p) % SECP.p;
+const zero = () => ({x:0n,y:1n,z:0n});
+const toJac = p => ({x:p.x,y:p.y,z:1n});
+const isZero = p => p.z === 0n;
+const modPow = (a, exp) => {
+  let r = 1n;
+  a = modP(a);
+  while(exp > 0n) {
+    if ((exp & 1n) === 1n) r = modP(r * a);
+    a = modP(a * a);
+    exp >>= 1n;
+  }
+  return r;
+};
+
+function doubleJ(q) {
+  if (isZero(q) || q.y === 0n) return zero();
+  const A = modP(q.x * q.x);
+  const B = modP(q.y * q.y);
+  const C = modP(B * B);
+  const D = modP(2n * (modP((q.x + B) ** 2n) - A - C));
+  const E = modP(3n * A);
+  const F = modP(E * E);
+  return {
+    x: modP(F - 2n * D),
+    y: modP(E * (D - modP(F - 2n * D)) - 8n * C),
+    z: modP(2n * q.y * q.z)
+  };
+}
+
+function addJ(p, q) {
+  if (isZero(p)) return q;
+  if (isZero(q)) return p;
+  const z1s = modP(p.z * p.z);
+  const z2s = modP(q.z * q.z);
+  const u1 = modP(p.x * z2s);
+  const u2 = modP(q.x * z1s);
+  const s1 = modP(p.y * q.z * z2s);
+  const s2 = modP(q.y * p.z * z1s);
+  const h = modP(u2 - u1);
+  const r = modP(s2 - s1);
+  if (h === 0n) return r === 0n ? doubleJ(p) : zero();
+  const hh = modP(h * h);
+  const hhh = modP(hh * h);
+  const v = modP(u1 * hh);
+  const x3 = modP(r * r - hhh - 2n * v);
+  const y3 = modP(r * (v - x3) - s1 * hhh);
+  return {x:x3, y:y3, z:modP(h * p.z * q.z)};
+}
+
+function mulJ(point, scalar) {
+  if (scalar <= 0n || scalar >= SECP.n) throw new Error('Scalare ECC non valido');
+  let result = zero();
+  for (const bit of scalar.toString(2)) {
+    result = doubleJ(result);
+    if (bit === '1') result = addJ(result, toJac(point));
+  }
+  return result;
+}
+
+function toAffine(q) {
+  if (isZero(q)) throw new Error('Punto all’infinito');
+  const zInv = modPow(q.z, SECP.p - 2n);
+  const z2 = modP(zInv * zInv);
+  return {x:modP(q.x * z2), y:modP(q.y * z2 * zInv)};
+}
+
+function matchesJacAffine(q, point) {
+  if (isZero(q)) return false;
+  const z2 = modP(q.z * q.z);
+  return q.x === modP(point.x * z2) && q.y === modP(point.y * z2 * q.z);
+}
+
+function randomScalar() {
+  const raw = crypto.getRandomValues(new Uint8Array(32));
+  const value = BigInt('0x' + bytesHex(raw));
+  return (value % (SECP.n - 1n)) + 1n;
+}
+
+const hex32 = n => n.toString(16).padStart(64,'0');
+const hexPoint = pt => '04' + hex32(pt.x) + hex32(pt.y);
+const bytesHex = bytes => [...bytes].map(x => x.toString(16).padStart(2,'0')).join('');
+const hexBytes = text => new Uint8Array(text.match(/.{2}/g).map(h => parseInt(h,16)));
+const textBytes = text => new TextEncoder().encode(text);
+
+async function derivedKey(shared, ephemeral, mode) {
+  const material = await crypto.subtle.importKey('raw', hexBytes(hex32(shared.x)), 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({
+    name:'HKDF', hash:'SHA-256', salt:hexBytes(hexPoint(ephemeral)),
+    info:textBytes('ecc-caesar-homework-ecdh-aes-gcm-v1')
+  },material,{name:'AES-GCM',length:256},false,[mode]);
+}
+
+function getSecret() {
+  const k = Number($('eccPrivate').value);
+  if (!Number.isInteger(k) || k < 1 || k > 2000) throw new Error('La chiave privata deve essere un intero tra 1 e 2000.');
+  return BigInt(k);
+}
+
+let eccPackage = null;
+let eccPublic = null;
+
+function setStatus(id, text, state='info') {
+  const el = $(id);
+  el.textContent = text;
+  el.className = 'small-note mt-2 ' + (state === 'error' ? 'text-danger' : state === 'success' ? 'text-success' : '');
+}
+
+function ensureCrypto() {
+  if (!globalThis.crypto?.getRandomValues || !globalThis.crypto?.subtle) throw new Error('Il browser non rende disponibile Web Crypto. Apri il sito su localhost o HTTPS.');
+}
+
+async function eccEncrypt() {
+  try {
+    ensureCrypto();
+    const k = getSecret();
+    const message = $('eccPlain').value;
+    if (!message) throw new Error('Scrivi un messaggio prima di cifrarlo.');
+    $('eccEncrypt').disabled = true;
+    const publicKey = toAffine(mulJ(SECP.G,k));
+    const r = randomScalar();
+    const ephemeral = toAffine(mulJ(SECP.G,r));
+    const shared = toAffine(mulJ(publicKey,r));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await derivedKey(shared,ephemeral,'encrypt');
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,textBytes(message)));
+    eccPackage = {ephemeral,iv,ciphertext:ct};
+    eccPublic = publicKey;
+    $('eccPublic').textContent = '04' + hex32(publicKey.x) + hex32(publicKey.y);
+    $('eccEphemeral').textContent = '04' + hex32(ephemeral.x) + hex32(ephemeral.y);
+    $('eccCiphertext').textContent = bytesHex(ct);
+    $('eccIv').textContent = bytesHex(iv);
+    $('eccDecrypted').textContent = '—';
+    $('eccRecovered').textContent = '—';
+    $('eccAttackInfo').textContent = '—';
+    $('eccPrivateDecrypt').value = k.toString();
+    setStatus('eccStatus','Messaggio cifrato. Premi Decifra per verificarlo.','success');
+    setStatus('eccAttackStatus','');
+  } catch(err) {
+    setStatus('eccStatus',err.message,'error');
+  } finally {
+    $('eccEncrypt').disabled = false;
+  }
+}
+
+async function eccDecryptWith(k) {
+  if (!eccPackage) throw new Error('Prima cifra un messaggio.');
+  const shared = toAffine(mulJ(eccPackage.ephemeral,BigInt(k)));
+  const aesKey = await derivedKey(shared,eccPackage.ephemeral,'decrypt');
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM',iv:eccPackage.iv},aesKey,eccPackage.ciphertext);
+  return new TextDecoder('utf-8',{fatal:true}).decode(plain);
+}
+
+async function eccDecrypt() {
+  try {
+    ensureCrypto();
+    const k=Number($('eccPrivateDecrypt').value);
+    if (!Number.isInteger(k) || k < 1 || k > 2000) throw new Error('Inserisci una chiave privata tra 1 e 2000.');
+    $('eccDecrypted').textContent = await eccDecryptWith(k);
+    setStatus('eccStatus','Decifratura riuscita con la chiave privata corretta.','success');
+  } catch(err) {
+    $('eccDecrypted').textContent = '—';
+    setStatus('eccStatus','Decifratura non riuscita: chiave errata oppure dati modificati.','error');
+  }
+}
+
+async function attackECC() {
+  try {
+    ensureCrypto();
+    if (!eccPackage || !eccPublic) throw new Error('Prima cifra un messaggio.');
+    const limit=Number($('eccAttackLimit').value);
+    if (!Number.isInteger(limit) || limit < 1 || limit > 2000) throw new Error('Il limite di ricerca deve essere tra 1 e 2000.');
+    $('eccAttack').disabled=true;
+    const start=performance.now();
+    let test = zero();
+    let found = null;
+    for (let trial=1;trial<=limit;trial++) {
+      test=addJ(test,toJac(SECP.G));
+      if(matchesJacAffine(test,eccPublic)) {found=trial;break;}
+    }
+    const elapsed=(performance.now()-start).toFixed(1);
+    if (found === null) {
+      $('eccRecovered').textContent='Nessuna chiave nell’intervallo testato';
+      $('eccAttackInfo').textContent=`${limit} chiavi controllate in ${elapsed} ms`;
+      setStatus('eccAttackStatus','La chiave potrebbe essere fuori dall’intervallo scelto.');
+      return;
+    }
+    $('eccRecovered').textContent=String(found);
+    $('eccAttackInfo').textContent=`${found} tentativi · ${elapsed} ms · confrontando dG con la chiave pubblica`;
+    const recovered=await eccDecryptWith(found);
+    $('eccDecrypted').textContent=recovered;
+    setStatus('eccAttackStatus','Chiave recuperata e messaggio decifrato: ' + recovered,'success');
+  } catch(err) {
+    setStatus('eccAttackStatus',err.message,'error');
+  } finally {
+    $('eccAttack').disabled=false;
+  }
+}
+
+function rotateCaesar(text, key) {
+  return text.replace(/[A-Za-z]/g,char=>{
+    const start=char.charCodeAt(0) >= 97 ? 97 : 65;
+    return String.fromCharCode(start+(char.charCodeAt(0)-start+key%26+26)%26);
+  });
+}
+
+function countLetters(text) {
+  const counts=Array(26).fill(0);
+  for(const char of text.toUpperCase()) {
+    const c=char.charCodeAt(0)-65;
+    if(c>=0 && c<26) counts[c]++;
+  }
+  return counts;
+}
+
+function chiSquare(text) {
+  const counts=countLetters(text);
+  const total=counts.reduce((a,b)=>a+b,0);
+  if (!total) return Infinity;
+  return counts.reduce((score,actual,i)=>{
+    const expected=total*enFrequency[i]/100;
+    return score+(actual-expected)**2/expected;
+  },0);
+}
+
+function candidateKeys(cipher) {
+  return Array.from({length:26},(_,k)=>({
+    key:k,decoded:rotateCaesar(cipher,-k),score:chiSquare(rotateCaesar(cipher,-k))
+  })).sort((a,b)=>a.score-b.score);
+}
+
+function caesarEncrypt() {
+  const plain=$('caesarPlain').value;
+  const key=Number($('caesarKey').value);
+  if (!Number.isInteger(key) || key < 0 || key > 25) {
+    setStatus('caesarStatus','La chiave deve essere un intero tra 0 e 25.','error');
+    return;
+  }
+  $('caesarCipher').value=rotateCaesar(plain,key);
+  $('caesarDecoded').value=rotateCaesar($('caesarCipher').value,-key);
+  setStatus('caesarStatus',`Chiave ${key}: cifratura e decifratura completate.`,'success');
+  attackCaesar();
+}
+
+function caesarDecrypt() {
+  const key=Number($('caesarKey').value);
+  if (!Number.isInteger(key) || key < 0 || key > 25) return;
+  $('caesarDecoded').value=rotateCaesar($('caesarCipher').value,-key);
+}
+
+function attackCaesar() {
+  const cipher=$('caesarCipher').value;
+  if (!countLetters(cipher).some(Boolean)) {
+    $('caesarBest').textContent='Inserisci un testo cifrato con delle lettere.';
+    $('caesarRank').replaceChildren();
+    return;
+  }
+  const ranked=candidateKeys(cipher);
+  $('caesarBest').textContent=`Chiave stimata: ${ranked[0].key} · χ² = ${ranked[0].score.toFixed(2)}\n\n${ranked[0].decoded}`;
+  const tbody=$('caesarRank');
+  tbody.replaceChildren();
+  ranked.slice(0,8).forEach((c,i)=>{
+    const tr=document.createElement('tr');
+    [String(i+1),String(c.key),c.score.toFixed(2),c.decoded.slice(0,110).replace(/\s+/g,' ')].forEach(v=>{
+      const td=document.createElement('td');td.textContent=v;tr.append(td);
+    });
+    tbody.append(tr);
+  });
+  renderFrequencyChart(ranked[0].decoded);
+}
+
+function renderFrequencyChart(text) {
+  const canvas=$('frequencyChart');
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const observed=countLetters(text);
+  const n=observed.reduce((a,b)=>a+b,0);
+  const percentages=observed.map(x=>n?100*x/n:0);
+  const max=Math.max(...percentages,...enFrequency,1)*1.10;
+  const left=23,right=12,top=18,bottom=34;
+  const bw=(w-left-right)/26;
+  ctx.strokeStyle='#d8dfe7';
+  ctx.beginPath();ctx.moveTo(left,h-bottom);ctx.lineTo(w-right,h-bottom);ctx.stroke();
+  for(let i=0;i<26;i++) {
+    const px=left+i*bw;
+    const refH=enFrequency[i]/max*(h-top-bottom);
+    const obsH=percentages[i]/max*(h-top-bottom);
+    ctx.fillStyle='#cbd5e1';ctx.fillRect(px+1,h-bottom-refH,bw*.37,refH);
+    ctx.fillStyle='#2563a6';ctx.fillRect(px+bw*.49,h-bottom-obsH,bw*.36,obsH);
+    ctx.fillStyle='#6b7280';ctx.font='11px Arial';ctx.fillText(String.fromCharCode(65+i),px+3,h-14);
+  }
+}
+
+const longEnglishText = `The small town library opened early every morning, and the reading room quickly filled with people preparing for the day. Students worked through exercises, visitors read local newspapers, and a retired teacher helped children choose books. By the window, a young engineer often studied mathematics before leaving for work. She liked the quiet atmosphere because difficult problems seemed easier when there were fewer distractions. The librarian kept careful records of borrowed books and ordered new titles whenever the shelves became too crowded. Every Friday, the library organized a discussion about science, history, or life in the town.
+
+During the summer the local school invited volunteers to build a garden behind the sports field. They planted vegetables, measured the rainfall, and compared how quickly different seeds began to grow. Each group recorded its observations in a notebook. Some days were unusually dry, so the children designed a simple irrigation system using collected rainwater. Their teacher explained why experiments need repeatable measurements rather than guesses. At the end of the project, the students presented the results to their families and shared the vegetables with a nearby community kitchen.
+
+A small team of researchers wanted to understand how people travel across the city. Instead of relying on a single busy street, they counted vehicles at several intersections and interviewed passengers at different times of day. The results showed that short trips were common, but a reliable bus service could reduce the number of cars. The team checked its calculations, described the limitations of the sample, and published a report that residents could easily read. A good statistical argument, they concluded, depends on both suitable data and clear explanations.
+
+On a rainy afternoon, three friends decided to repair an old bicycle rather than buy a new one. They cleaned the chain, replaced a worn cable, and adjusted the brakes. At first the gears made an unpleasant noise, but after several careful attempts the bicycle moved smoothly again. The repair was not expensive, and the friends learned how many small mechanical parts must work together. They were pleased that their practical solution saved material and extended the useful life of something that had almost been thrown away.
+
+In the evening the neighborhood bakery prepared bread for the following morning. The baker mixed flour, water, yeast, and salt, then allowed the dough to rest in a cool room. He noticed that different temperatures changed how quickly the dough expanded. Over time he collected notes that helped him make consistent loaves. Customers cared most about the taste and the fresh smell, but the process also showed how observation, repetition, and simple measurement can improve an everyday task.
+
+The university course introduced students to probability with familiar examples such as dice, cards, and the weather. Later the class considered more complicated questions about biased samples and uncertain predictions. The professor encouraged everyone to test assumptions and explain why an attractive pattern might still be the result of chance. Working in small groups, the students compared their methods and learned that two calculations can look similar while answering different questions. Their final reports included both successful results and experiments that had failed.
+
+A traveler kept a journal during a long train journey through several regions. She described changing landscapes, conversations with strangers, and the practical details of each station. The notes were useful because they preserved ordinary observations that would otherwise have been forgotten. When she returned home, she organized the entries by date and wrote a short summary for friends. She also checked place names and distances to avoid reporting details that she remembered incorrectly. Her account became more reliable as she separated direct observations from later interpretations.
+
+The city museum created a new exhibition about communication. Visitors could compare handwritten letters, printed newspapers, early radio equipment, and modern digital networks. Each invention solved a different problem, although many shared the goal of carrying information across distance. A guide explained that faster communication does not automatically guarantee accurate information. People still need ways to recognize errors, verify sources, and understand the context of a message before making important decisions.
+
+An amateur astronomy club met on clear nights outside the city where the sky was darker. Its members used a telescope, star charts, and a notebook to record observations of the moon and nearby planets. Beginners sometimes mistook reflections for distant objects, so experienced members taught them to repeat an observation before drawing conclusions. Over several months, the club compared notes and improved its ability to locate faint objects. The meetings were enjoyable, but they also provided a practical lesson in patient and systematic measurement.
+
+At the end of the year, several local organizations reviewed their projects. They compared budgets, volunteer hours, and the number of residents who had participated. The reports showed that successful activities depended not only on good ideas but also on regular communication and realistic planning. One group discovered that its initial survey had reached too few people to support a broad conclusion. Rather than hide the problem, it designed a better survey for the following year. The participants agreed that useful analysis should reveal uncertainty as clearly as it reports results.`;
+
+function corpusWindows(text,length,count) {
+  const letters=text.replace(/[^A-Za-z]/g,'').toUpperCase();
+  if(letters.length<length) return [];
+  const maxOffset=letters.length-length;
+  return Array.from({length:count},(_,idx)=>letters.slice(Math.floor(maxOffset*(idx+.35)/(count+.7)),Math.floor(maxOffset*(idx+.35)/(count+.7))+length));
+}
+
+function runLengthExperiments() {
+  const corpus=$('testCorpus').value;
+  const n=corpus.replace(/[^A-Za-z]/g,'').length;
+  const lengths=[20,50,100,250,500,1000];
+  const tbody=$('testResults');
+  tbody.replaceChildren();
+  const trials=12;
+  let used=0;
+  for(const size of lengths) {
+    const windows=corpusWindows(corpus,size,trials);
+    if(windows.length===0) continue;
+    let correct=0;
+    for(let j=0;j<windows.length;j++) {
+      const key=1+(j*7+size)%25;
+      const ct=rotateCaesar(windows[j],key);
+      const found=candidateKeys(ct)[0].key;
+      if(found===key) correct++;
+    }
+    const tr=document.createElement('tr');
+    [String(size),String(windows.length),String(correct),`${(100*correct/windows.length).toFixed(1)}%`].forEach(v=>{
+      const td=document.createElement('td');td.textContent=v;tr.append(td);
+    });
+    tbody.append(tr);
+    used++;
+  }
+  $('testExplanation').textContent=used ? `Corpus: ${n} lettere inglesi, 12 prove per lunghezza con chiavi diverse. Le percentuali sono risultati dell’esperimento sul corpus fornito e non probabilità universali.` : 'Il corpus è troppo corto: inserisci almeno 20 lettere.';
+}
+
+function initialize() {
+  $('eccEncrypt').addEventListener('click',eccEncrypt);
+  $('eccDecrypt').addEventListener('click',eccDecrypt);
+  $('eccAttack').addEventListener('click',attackECC);
+  $('caesarEncrypt').addEventListener('click',caesarEncrypt);
+  $('caesarDecrypt').addEventListener('click',caesarDecrypt);
+  $('caesarAttack').addEventListener('click',attackCaesar);
+  $('caesarCipher').addEventListener('input',attackCaesar);
+  $('testButton').addEventListener('click',runLengthExperiments);
+  $('testCorpus').value=longEnglishText;
+  caesarEncrypt();
+  runLengthExperiments();
+  setStatus('eccStatus','Pronto per cifrare il messaggio.');
+}
+
+document.addEventListener('DOMContentLoaded',initialize);
+
+</script>
+</body>
+</html>

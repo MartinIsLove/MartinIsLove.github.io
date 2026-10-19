@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework 1 - Curve ellittiche</title>
+<link rel="stylesheet" href="assets/bootstrap.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script defer src="assets/hw1.js"></script>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html" aria-current="page">Homework 1</a><a href="homework2.html">Homework 2</a></nav></div></header>
+<main class="container">
+<h2>Homework 1 - Curve ellittiche</h2>
+<p class="lead-text">L'obiettivo è calcolare una chiave pubblica toy con Q = kG e osservare come cambiano i risultati al variare di k.</p>
+<div class="note">Usiamo la curva y² = x³ + 7 (mod 17). Non è la vera secp256k1: i numeri sono piccoli per poter seguire i calcoli.</div>
+<section class="section">
+<h3>1. Calcolo della chiave pubblica</h3>
+<div class="row g-3 align-items-end">
+<div class="col-sm-3"><label for="selectG">Punto G</label><select id="selectG" class="form-select mono"></select></div>
+<div class="col-sm-3"><label for="inputK">Chiave privata k</label><input type="number" id="inputK" class="form-control" value="6" min="1" max="500" step="1"></div>
+<div class="col-sm-4"><label for="selectMethod">Metodo</label><select id="selectMethod" class="form-select"><option value="naive">Addizioni ripetute</option><option value="double_add">Double-and-add</option></select></div>
+<div class="col-sm-2"><button type="button" id="btnCompute" class="btn btn-primary w-100">Calcola</button></div>
+</div>
+<div class="result mt-3"><div class="fw-bold" id="pubKeyResult">-</div><div class="small mt-1" id="calcInfoBadge"></div><div class="small-note" id="hw1OrderNote"></div></div>
+<div class="row g-4 mt-1">
+<div class="col-lg-6"><h4>Punti della curva</h4><canvas id="eccCanvas" width="420" height="420"></canvas><div class="d-flex flex-wrap gap-2 mt-2"><button type="button" class="btn btn-sm btn-outline-secondary" id="btnPrev">Indietro</button><button type="button" class="btn btn-sm btn-outline-primary" id="btnPlay">Play</button><button type="button" class="btn btn-sm btn-outline-secondary" id="btnNext">Avanti</button><button type="button" class="btn btn-sm btn-outline-secondary" id="btnReset">Reset</button></div><p class="small-note mt-2" id="stepDescription"></p></div>
+<div class="col-lg-6"><h4>Passaggi</h4><div class="list-group" id="logList"></div></div>
+</div>
+</section>
+<section class="section">
+<h3>2. Analisi statistica</h3>
+<p class="small-note">Le statistiche sono calcolate per i punti generati dal G selezionato. Il punto all'infinito è escluso dalle statistiche delle coordinate.</p>
+<div class="row g-3">
+<div class="col-lg-6"><div id="statCoords" class="small mb-3"></div><h4>Distribuzione di x</h4><canvas id="histX" class="chart" width="450" height="190"></canvas><h4 class="mt-3">Distribuzione di y</h4><canvas id="histY" class="chart" width="450" height="190"></canvas></div>
+<div class="col-lg-6"><h4>Correlazioni e bit</h4><div id="statMetrics" class="small"></div></div>
+</div>
+</section>
+<section class="section">
+<h3>3. Osservazioni</h3>
+<p>La moltiplicazione Q = kG è facile da eseguire, ma su una curva reale come secp256k1 è molto difficile ricavare k conoscendo solo Q. Questo è il problema del logaritmo discreto sulle curve ellittiche.</p>
+<p>Sulla curva toy, invece, basta provare pochi valori di k. Inoltre, i risultati si ripetono dopo un certo numero di addizioni: è l'ordine del punto G.</p>
+<p>La funzione k → kG non è una funzione hash. Ha una struttura algebrica precisa, perché (a + b)G = aG + bG. Per una funzione hash crittografica, invece, sono importanti la resistenza alle collisioni e alle preimmagini e un buon effetto valanga. Una distribuzione apparentemente casuale, da sola, non dimostra che un algoritmo sia sicuro.</p>
+</section>
+</main>
+<footer><div class="container">Homework 1 · Esercizio didattico</div></footer>
+</body>
+</html>
