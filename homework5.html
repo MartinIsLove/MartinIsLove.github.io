@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework - Welford e statistiche campionarie</title>
+<style>
+
+:root{font-family:Arial,Helvetica,sans-serif;color:#24292f;background:#f8f9fa;line-height:1.5}*{box-sizing:border-box}body{margin:0;font-size:15px}header{background:white;border-bottom:1px solid #dce0e5}header .container{padding-top:14px;padding-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}header h1{font-size:19px;margin:0}nav{display:flex;gap:15px;flex-wrap:wrap}a{color:#1559a2;text-decoration:none}a:hover{text-decoration:underline}nav a{font-size:14px;color:#46576a}nav a[aria-current=page]{font-weight:bold;color:#1559a2}.container{max-width:1020px;margin:auto;padding:0 22px}main{padding-top:28px!important;padding-bottom:42px!important}h2{font-size:23px;margin:0 0 14px}h3{font-size:18px;margin:0 0 13px}h4{font-size:16px;margin:0 0 10px}p{margin:0 0 13px}section.section,.section{background:white;padding:19px 20px;border:1px solid #e0e4e8;border-radius:5px;margin-top:18px}.note{border-left:3px solid #8295aa;padding:12px 15px;background:#eef2f6;color:#444;font-size:14px}.lead-text,.small-note{color:#606873}.small-note{font-size:13px}.small{font-size:13px!important}.row{display:flex;flex-wrap:wrap;margin-left:-9px;margin-right:-9px;row-gap:14px}.row>*{padding-left:9px;padding-right:9px;min-width:0;flex:1 0 100%}.col-auto{flex:0 0 auto}.col-6{flex:0 0 50%}@media(min-width:576px){.col-sm-3{flex:0 0 25%}.col-sm-4{flex:0 0 33.333%}.col-sm-5{flex:0 0 41.6667%}.col-sm-9{flex:0 0 75%}}@media(min-width:768px){.col-md-3{flex:0 0 25%}.col-md-4{flex:0 0 33.333%}.col-md-6{flex:0 0 50%}.col-md-8{flex:0 0 66.666%}}@media(min-width:992px){.col-lg-3{flex:0 0 25%}.col-lg-6{flex:0 0 50%}.col-lg-7{flex:0 0 58.333%}.col-lg-9{flex:0 0 75%}}.g-2{row-gap:8px}.g-3{row-gap:13px}.g-4{row-gap:19px}.form-control,.form-select,textarea,input,select{display:block;width:100%;padding:8px 10px;border:1px solid #cdd3da;border-radius:4px;background:white;color:#222;font:inherit}textarea{resize:vertical}label{font-size:14px;font-weight:600;display:block;margin-bottom:5px}input[type=checkbox]{display:inline;width:auto}.btn,button{border-radius:4px;border:1px solid #cbd2d9;background:#f8f9fa;color:#252d35;padding:8px 13px;font:inherit;font-size:14px;cursor:pointer}.btn:hover,button:hover{filter:brightness(.96)}button:disabled{opacity:.55;cursor:wait}.btn-primary{background:#225d9c;border-color:#225d9c;color:white}.btn-outline-primary{background:white;border-color:#225d9c;color:#225d9c}.btn-outline-secondary{background:white;border-color:#9aa2ac;color:#44515d}.btn-outline-danger{background:white;border-color:#aa3c3c;color:#aa3c3c}.btn-sm{padding:5px 9px;font-size:13px}.w-100{width:100%}.d-flex{display:flex}.flex-wrap{flex-wrap:wrap}.align-items-center{align-items:center}.align-items-end{align-items:flex-end}.gap-2{gap:8px}.gap-3{gap:12px}.mt-1{margin-top:5px!important}.mt-2{margin-top:11px!important}.mt-3{margin-top:17px!important}.mt-4{margin-top:23px!important}.mb-0{margin-bottom:0!important}.mb-2{margin-bottom:12px!important}.mb-3{margin-bottom:17px!important}.mono,code,pre,.code-value,.step-output{font-family:Consolas,'Courier New',monospace;overflow-wrap:anywhere}.code-value,.step-output,.output{padding:9px 11px;border-radius:4px;border:1px solid #e2e5e8;background:#f8fafc;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.result{padding:12px 14px;border:1px solid #c9dceb;border-radius:4px;background:#f2f7fb;overflow-wrap:anywhere}.fw-bold{font-weight:700}.text-danger{color:#ad3131!important}.text-success{color:#286d3d!important}.text-muted{color:#687480!important}.text-primary{color:#225d9c!important}.d-none{display:none!important}.table-responsive{overflow-x:auto}.table{width:100%;border-collapse:collapse;font-size:14px;margin:0}.table th,.table td{border:1px solid #e1e5e9;text-align:left;padding:7px 9px;vertical-align:top}.table th{background:#f4f6f8}.table-sm td,.table-sm th{padding:5px 8px}.chart,canvas{max-width:100%;height:auto;background:white;border:1px solid #e2e5e9;border-radius:3px}.chart{display:block;width:100%}#eccCanvas{width:100%}#logList{max-height:380px;overflow:auto;border:1px solid #e1e5e9}#logList .list-group-item{display:block;text-align:left;width:100%;background:#fff;border:0;border-bottom:1px solid #eee;padding:8px 10px;border-radius:0;font-size:13px}#logList .list-group-item.active{background:#e7f0f9}.list-group-item .d-flex{justify-content:space-between;gap:10px}.step{padding:12px 0;border-top:1px solid #eee}.step h4{margin-bottom:5px}.step-output>div+div{margin-top:6px}.secret-blur{filter:blur(5px);user-select:none}.grid-label{font-size:13px;font-weight:bold;color:#465261;margin:14px 0 4px}.anchor-nav a{display:inline-block;margin-right:12px;font-size:14px}footer{border-top:1px solid #e1e5e9;padding:17px 0;color:#66707c;font-size:13px}strong{font-weight:700}code{font-size:.9em}body a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #85b5e6;outline-offset:2px}@media(max-width:600px){.container{padding-left:15px;padding-right:15px}main{padding-top:18px!important}.section{padding:15px!important}header h1{font-size:17px}nav{gap:10px}}
+
+
+.tab-switch{display:flex;gap:7px;flex-wrap:wrap;margin:20px 0 0;border-bottom:1px solid #dce1e7;padding-bottom:10px}
+.tab-switch button{background:white;border:1px solid #cbd3db;color:#405061;padding:9px 16px}
+.tab-switch button[aria-pressed="true"]{background:#225d9c;border-color:#225d9c;color:white}
+.tab-page[hidden]{display:none!important}
+.number-row{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.number-row .metric{flex:1 1 140px;min-height:84px}
+.metric{border:1px solid #e0e4e8;border-radius:4px;padding:11px 13px;background:#fafbfc;display:flex;flex-direction:column;gap:5px}
+.metric span{font-size:13px;color:#5b6571}.metric strong{font-size:21px}
+.mathline{display:block;font-family:Cambria,Georgia,serif;font-size:18px;margin:13px 0;text-align:center}
+.formula-box{background:#f7f9fb;border-left:3px solid #9aaec2;padding:12px 16px;margin:10px 0}
+pre.logic{font-size:13px;padding:14px;background:#f5f7f8;border:1px solid #e1e5e9;border-radius:4px;white-space:pre-wrap;overflow-wrap:normal}
+.compact{font-size:13px} .compact td,.compact th{padding:6px 8px}
+.table td{text-align:right}.table th{text-align:right}.table td:first-child,.table th:first-child{text-align:left}
+.chart{width:100%;display:block;border:1px solid #dfe3e8;background:white}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#5a6470;margin-top:6px}
+.dot{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px;background:#306a9c}
+.dot.gray{background:#8a97a5}.dot.orange{background:#bd7a48}
+#stepTable tr.active{background:#edf5fc}#stepTable tr.active td{background:#edf5fc}
+.note-small{color:#576575;font-size:13px;margin-top:9px}
+@media(max-width:650px){.tab-switch{display:grid;grid-template-columns:1fr 1fr}.tab-switch button{padding:8px 4px;font-size:13px}.mathline{font-size:15px}}
+</style>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Homework 2</a><a href="homework3.html">Homework 3</a><a href="homework4.html">Homework 4</a><a href="homework5.html" aria-current="page">Homework 5</a></nav></div></header>
+<main class="container">
+<h2>Homework - Welford e stime campionarie</h2>
+<p class="lead-text">Due esercizi: ricaviamo le formule ricorsive di Welford e poi le utilizziamo per analizzare i punteggi ottenuti da più hacker su n sistemi.</p>
+<div class="tab-switch" role="group" aria-label="Seleziona esercizio">
+<button id="choose1" type="button" aria-pressed="true">Esercizio 1 · Formule di Welford</button>
+<button id="choose2" type="button" aria-pressed="false">Esercizio 2 · Simulazione</button>
+</div>
+<div id="exercise1" class="tab-page">
+<section class="section">
+<h3>1. Dalla media di Knuth alla varianza di Welford</h3>
+<p>Per una sequenza di valori x₁, x₂, ..., xₖ, la media aggiornata quando arriva xₖ è:</p>
+<div class="mathline">μₖ = μₖ₋₁ + (xₖ − μₖ₋₁) / k</div>
+<p>Per la varianza, definiamo la somma degli scarti quadratici rispetto alla media corrente:</p>
+<div class="mathline">M₂,ₖ = Σᵢ₌₁ᵏ (xᵢ − μₖ)²</div>
+<p>Se indichiamo con δ = xₖ − μₖ₋₁ la distanza del nuovo valore dalla vecchia media, allora la nuova media è μₖ = μₖ₋₁ + δ/k.</p>
+<p>Separiamo la somma sui primi k − 1 elementi e sull'ultimo. Espandendo (xᵢ − μₖ)² sui primi k − 1 elementi, il termine misto scompare perché la somma degli scarti dalla loro media è zero:</p>
+<div class="mathline">Σᵢ₌₁ᵏ⁻¹ (xᵢ − μₖ₋₁) = 0</div>
+<p>Resta M₂,ₖ₋₁ + (k − 1)(δ/k)², a cui si aggiunge (xₖ − μₖ)² = [(k − 1)δ/k]². Raccogliendo si ottiene:</p>
+<div class="formula-box">
+<div class="mathline">M₂,ₖ = M₂,ₖ₋₁ + δ (xₖ − μₖ)</div>
+<div class="mathline">s²ₖ = M₂,ₖ / (k − 1), &nbsp; k ≥ 2</div>
+</div>
+<p>La divisione per k − 1 produce la <strong>varianza campionaria corretta</strong> (stimatore non distorto della varianza della popolazione). Dividendo M₂,ₖ per k si ottiene invece la varianza descrittiva dei valori osservati.</p>
+<h4>Il nucleo dell'algoritmo: tre righe</h4>
+<pre class="logic">const delta = x - mean;
+mean += delta / count;
+M2 += delta * (x - mean);</pre>
+<p class="note-small">La variabile <code>count</code> è il numero di osservazioni già incluse, compreso il nuovo valore x. Prima di queste tre righe si incrementa <code>count</code>. Partiamo da count = 0, mean = 0 e M2 = 0.</p>
+</section>
+<section class="section">
+<h3>2. Calcolo passo per passo</h3>
+<p>Inserisci una sequenza di numeri separati da virgole. Il programma aggiorna media e M₂ dopo ogni osservazione, senza conservare le osservazioni precedenti durante il calcolo.</p>
+<label for="sequence">Valori osservati</label>
+<textarea id="sequence" rows="2" spellcheck="false">2, 4, 4, 8</textarea>
+<div class="d-flex gap-2 flex-wrap mt-2"><button id="calculate1" class="btn-primary">Calcola</button><button id="previous1">Passo precedente</button><button id="next1">Passo successivo</button></div>
+<p id="status1" role="status" class="small-note mt-2"></p>
+<div class="number-row">
+<div class="metric"><span>Osservazioni</span><strong id="count1">–</strong></div>
+<div class="metric"><span>Media corrente</span><strong id="mean1">–</strong></div>
+<div class="metric"><span>M₂ (SS)</span><strong id="m21">–</strong></div>
+<div class="metric"><span>Varianza campionaria s²</span><strong id="var1">–</strong></div>
+</div>
+<div class="table-responsive"><table class="table compact"><thead><tr><th>k</th><th>xₖ</th><th>δ = xₖ − μₖ₋₁</th><th>μₖ</th><th>M₂,ₖ</th><th>s²ₖ</th></tr></thead><tbody id="stepTable"></tbody></table></div>
+<p id="final1" class="note-small"></p>
+</section>
+</div>
+<div id="exercise2" class="tab-page" hidden>
+<section class="section">
+<h3>1. Modello probabilistico</h3>
+<p>Ogni hacker esegue un tentativo su ciascuno degli n sistemi. Il punteggio X è un intero fra 0 e 10; tutti i punteggi sono generati in modo indipendente dalla stessa distribuzione.</p>
+<p>Ho scelto una distribuzione <strong>triangolare discreta</strong>: i punteggi vicini a 5 sono più probabili di quelli estremi. Le probabilità per x = 0, ..., 10 sono proporzionali ai pesi 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1 (somma = 36).</p>
+<div class="row g-3"><div class="col-md-6"><canvas id="pmfChart" class="chart" width="480" height="250" role="img" aria-label="Probabilità dei punteggi da 0 a 10"></canvas></div><div class="col-md-6"><div class="formula-box"><div class="mathline">μ = E[X] = Σₓ x · P(X = x) = 5</div><div class="mathline">σ² = E[(X − μ)²] = 35/6 ≈ 5,8333</div></div><p class="small-note">Questi valori sono calcolati dalla distribuzione fissata, non stimati dalla simulazione.</p></div></div>
+</section>
+<section class="section">
+<h3>2. Parametri e simulazione</h3>
+<div class="row g-3 align-items-end">
+<div class="col-md-3"><label for="n2">Sistemi per hacker (n)</label><input id="n2" type="number" value="200" min="2" max="1500" step="1"></div>
+<div class="col-md-3"><label for="m2">Numero di hacker (m)</label><input id="m2" type="number" value="400" min="2" max="1000" step="1"></div>
+<div class="col-md-3"><label for="seed2">Seme pseudo-casuale</label><input id="seed2" type="number" value="2026" min="1" max="4294967295" step="1"></div>
+<div class="col-md-3"><button id="simulate2" class="btn-primary w-100">Esegui simulazione</button></div>
+</div>
+<div class="d-flex gap-2 flex-wrap mt-3"><button id="seedNew2">Nuovo seme</button><button id="smallN2">Confronta n piccolo (10)</button><button id="largeN2">Confronta n grande (1000)</button></div>
+<p class="small-note mt-2" id="status2" role="status">Premi Esegui simulazione.</p>
+</section>
+<section class="section">
+<h3>3. Risultati su m hacker</h3>
+<p>Welford calcola, per ogni hacker, la media campionaria e la varianza campionaria corretta (divisore n − 1). Poi prendiamo la media delle m stime ottenute.</p>
+<div class="number-row">
+<div class="metric"><span>Media delle medie</span><strong id="avgMean2">–</strong><small>Teoria: μ = 5</small></div>
+<div class="metric"><span>Media delle varianze</span><strong id="avgVar2">–</strong><small>Teoria: σ² = 5,8333</small></div>
+<div class="metric"><span>Varianza empirica delle medie</span><strong id="spreadMean2">–</strong><small id="spreadMeanTheory2">Teoria: σ²/n</small></div>
+<div class="metric"><span>Varianza empirica delle varianze</span><strong id="spreadVar2">–</strong><small id="spreadVarTheory2">Teoria disponibile</small></div>
+</div>
+<h4>Traiettorie delle medie dei primi cinque hacker</h4>
+<canvas id="trajectory2" class="chart" width="900" height="285" role="img" aria-label="Traiettorie delle medie campionarie nel tempo"></canvas>
+<div class="row g-3 mt-3"><div class="col-md-6"><h4>Distribuzione delle medie campionarie</h4><canvas id="meanHist2" class="chart" width="460" height="270" role="img" aria-label="Istogramma delle medie campionarie"></canvas></div><div class="col-md-6"><h4>Distribuzione delle varianze campionarie</h4><canvas id="varHist2" class="chart" width="460" height="270" role="img" aria-label="Istogramma delle varianze campionarie"></canvas></div></div>
+<p class="note-small">La linea verticale negli istogrammi indica il valore teorico. I valori osservati fluttuano perché il numero di hacker è finito.</p>
+</section>
+<section class="section">
+<h3>4. Come cambia la variabilità quando aumenta n?</h3>
+<p>Per diversi numeri di sistemi, confrontiamo la media delle medie, la media delle varianze e la dispersione delle stime tra hacker. Ogni riga usa le traiettorie simulate fino al numero di sistemi indicato.</p>
+<h4>Variabilità delle medie campionarie</h4><canvas id="convergence2" class="chart" width="900" height="245" role="img" aria-label="Varianza empirica e teorica delle medie campionarie"></canvas>
+<div class="legend"><span><i class="dot"></i> Var(medie) simulata</span><span><i class="dot gray"></i> σ²/n teorica</span></div>
+<h4 class="mt-4">Variabilità delle varianze campionarie</h4><canvas id="convergenceVar2" class="chart" width="900" height="245" role="img" aria-label="Varianza delle varianze campionarie"></canvas>
+<div class="legend"><span><i class="dot orange"></i> Var(varianze) simulata</span><span><i class="dot gray"></i> Valore teorico</span></div>
+<div class="table-responsive mt-3"><table class="table compact"><thead><tr><th>n</th><th>Media delle medie</th><th>Media delle varianze</th><th>Var(medie) sim.</th><th>σ²/n</th><th>Var(varianze) sim.</th></tr></thead><tbody id="comparisonTable2"></tbody></table></div>
+</section>
+<section class="section">
+<h3>5. Interpretazione</h3>
+<div id="interpretation2"><p>La media campionaria e la varianza campionaria con divisore n − 1 sono stimatori non distorti di μ e σ². Aumentando n, in media diventano più stabili. Aumentando m non cambia la variabilità delle singole stime, ma migliorano le medie delle stime calcolate su molti hacker.</p></div>
+<p>Questo è utile nella statistica inferenziale: una popolazione può avere parametri ignoti, ma possiamo stimarli usando campioni. Il metodo di Welford permette di aggiornare le stime in streaming usando memoria costante, senza conservare tutti i punteggi.</p>
+<p class="small-note">Le conclusioni richiedono punteggi i.i.d. In un ambiente reale, sistemi e hacker potrebbero avere probabilità di successo diverse o dipendenze tra tentativi.</p>
+</section>
+</div>
+</main>
+<footer><div class="container">Esercitazione didattica · 2026</div></footer>
+<script>
+const $ = id => document.getElementById(id);
+const fmt = (x, digits=4) => Number.isFinite(x) ? x.toFixed(digits) : '–';
+function selectExercise(num) {
+  $('exercise1').hidden = num !== 1;
+  $('exercise2').hidden = num !== 2;
+  $('choose1').setAttribute('aria-pressed', String(num === 1));
+  $('choose2').setAttribute('aria-pressed', String(num === 2));
+  if (num === 2 && !simulationDone) runSimulation();
+  if (num === 2 && simulationDone) renderPlots();
+}
+$('choose1').onclick = () => selectExercise(1);
+$('choose2').onclick = () => selectExercise(2);
+function recurrence(values) {
+  let count = 0, mean = 0, M2 = 0;
+  const rows=[];
+  for (const x of values) {
+    count++;
+    const delta = x - mean;
+    mean += delta / count;
+    M2 += delta * (x - mean);
+    rows.push({count, x, delta, mean, M2, sample:count>1?M2/(count-1):null});
+  }
+  return rows;
+}
+let rows1=[], step1=0;
+function updateExercise1() {
+  const row=rows1[step1-1];
+  $('count1').textContent=row?String(row.count):'0';
+  $('mean1').textContent=row?fmt(row.mean):'–';
+  $('m21').textContent=row?fmt(row.M2):'–';
+  $('var1').textContent=row && row.sample!==null?fmt(row.sample):'n ≥ 2';
+  $('status1').textContent=`Passo ${step1} di ${rows1.length}`;
+  Array.from($('stepTable').children).forEach((tr,i)=>tr.classList.toggle('active',i===step1-1));
+  $('previous1').disabled=step1===0;
+  $('next1').disabled=step1>=rows1.length;
+  const last=rows1.at(-1);
+  $('final1').textContent=last ? `Risultato finale: media = ${fmt(last.mean,5)}, SS = ${fmt(last.M2,5)}, varianza campionaria s² = ${last.sample===null?'non definita':fmt(last.sample,5)}. La varianza con divisore n è ${fmt(last.M2/last.count,5)}.` : '';
+}
+function compute1() {
+  const text=$('sequence').value.trim();
+  const parts=text.split(/[;,\s]+/).filter(Boolean);
+  if (!parts.length || parts.length>1000) { $('status1').textContent='Inserisci da 1 a 1000 valori.';return; }
+  const values=parts.map(Number);
+  if (values.some(x=>!Number.isFinite(x))) { $('status1').textContent='La sequenza contiene un valore non numerico.';return; }
+  rows1=recurrence(values);
+  $('stepTable').replaceChildren();
+  for(const r of rows1) {
+    const tr=document.createElement('tr');
+    [r.count,r.x,fmt(r.delta),fmt(r.mean),fmt(r.M2),r.sample===null?'–':fmt(r.sample)].forEach(v=>{const td=document.createElement('td');td.textContent=String(v);tr.appendChild(td)});
+    tr.addEventListener('click',()=>{step1=r.count;updateExercise1()});
+    $('stepTable').appendChild(tr);
+  }
+  step1=rows1.length;
+  updateExercise1();
+}
+$('calculate1').onclick=compute1;
+$('previous1').onclick=()=>{step1=Math.max(0,step1-1);updateExercise1()};
+$('next1').onclick=()=>{step1=Math.min(rows1.length,step1+1);updateExercise1()};
+const weights=[1,2,3,4,5,6,5,4,3,2,1], probs=weights.map(w=>w/36);
+const MU=5, VAR=35/6, M4=161/2;
+function rng(seed) {
+  let a=seed>>>0;
+  return ()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296};
+}
+function sampleScore(random) {
+  const r=random()*36;
+  let sum=0;
+  for(let i=0;i<11;i++){sum+=weights[i];if(r<sum)return i;}
+  return 10;
+}
+function descriptive(values) {
+  const n=values.length;
+  const mean=values.reduce((a,b)=>a+b,0)/n;
+  const v=values.reduce((a,b)=>a+(b-mean)**2,0)/n;
+  return {mean,var:v};
+}
+function theoreticalVarianceOfVariance(n) {
+  return (M4 - ((n-3)/(n-1))*VAR*VAR)/n;
+}
+function drawCanvas(id) {
+  const canvas=$(id), ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);
+  ctx.font='12px Arial';ctx.lineWidth=1;
+  return {ctx,w,h};
+}
+function axes(ctx,w,h, ymin,ymax,xmin,xmax,{xLabel='n',yLabel='Varianza'}={}) {
+  const left=53,right=16,top=20,bottom=38;
+  const px=x=>left+(x-xmin)/(xmax-xmin||1)*(w-left-right);
+  const py=y=>h-bottom-(y-ymin)/(ymax-ymin||1)*(h-top-bottom);
+  ctx.strokeStyle='#d8dee5';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,h-bottom);ctx.lineTo(w-right,h-bottom);ctx.stroke();
+  ctx.fillStyle='#5e6874';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const y=ymin+(ymax-ymin)*i/4;const yy=py(y);ctx.strokeStyle='#edf0f4';ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillText(Math.abs(y)<10?fmt(y,2):fmt(y,1),left-7,yy+4)}
+  ctx.textAlign='center';
+  for(let i=0;i<=4;i++){const x=xmin+(xmax-xmin)*i/4;ctx.fillText(Number.isInteger(x)?String(x):fmt(x,1),px(x),h-bottom+17)}
+  ctx.textAlign='left';ctx.fillText(xLabel,w-right-5,h-5);ctx.fillText(yLabel,8,12);
+  return {px,py,left,right,top,bottom};
+}
+function drawPMF() {
+  const {ctx,w,h}=drawCanvas('pmfChart');
+  const {px,py}=axes(ctx,w,h,0,0.20,-0.5,10.5,{xLabel:'Punteggio',yLabel:'P(X = x)'});
+  ctx.fillStyle='#769bbb';
+  for(let x=0;x<=10;x++){const bar=22;const mid=px(x);ctx.fillRect(mid-bar/2,py(probs[x]),bar,py(0)-py(probs[x]));}
+}
+function histogram(id, values, ref) {
+  const {ctx,w,h}=drawCanvas(id);
+  if(!values.length)return;
+  let min=Math.min(...values), max=Math.max(...values);
+  min=Math.min(min,ref);max=Math.max(max,ref);
+  const span=max-min||1;min-=0.12*span;max+=0.12*span;
+  const bins=20,counts=Array(bins).fill(0);
+  for(const x of values){const i=Math.max(0,Math.min(bins-1,Math.floor((x-min)/(max-min)*bins)));counts[i]++;}
+  const maxC=Math.max(...counts,1);
+  const {px,py}=axes(ctx,w,h,0,maxC*1.18,min,max,{xLabel:'Valore',yLabel:'Frequenza'});
+  ctx.fillStyle='#779dbb';
+  for(let i=0;i<bins;i++){const start=min+(max-min)*i/bins;const end=min+(max-min)*(i+1)/bins;const bW=px(end)-px(start)-1;ctx.fillRect(px(start)+1,py(counts[i]),Math.max(bW,1),py(0)-py(counts[i]));}
+  ctx.strokeStyle='#ad683f';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(px(ref),py(0));ctx.lineTo(px(ref),py(maxC*1.18));ctx.stroke();ctx.setLineDash([]);
+}
+let latestSimulation=null,simulationDone=false;
+function checkpoints(n) {
+  return [...new Set([2,5,10,20,50,100,200,500,1000,n].filter(x=>x<=n))].sort((a,b)=>a-b);
+}
+function simulate(n,m,seed) {
+  const random=rng(seed), points=checkpoints(n), pointSet=new Set(points), snapshots=new Map(points.map(k=>[k,{means:[],vars:[]}])) , finalMeans=[],finalVars=[],traces=[];
+  const traceStride=Math.max(1,Math.ceil(n/100));
+  for(let hacker=0;hacker<m;hacker++) {
+    let mean=0,M2=0,trace=[];
+    for(let k=1;k<=n;k++) {
+      const x=sampleScore(random);
+      const delta=x-mean;
+      mean+=delta/k;
+      M2+=delta*(x-mean);
+      if(hacker<5 && (k===1 || k%traceStride===0 || k===n))trace.push({n:k,mean});
+      if(pointSet.has(k)){
+        const s=snapshots.get(k);
+        s.means.push(mean);
+        s.vars.push(M2/(k-1));
+      }
+    }
+    finalMeans.push(mean);finalVars.push(M2/(n-1));
+    if(hacker<5)traces.push(trace);
+  }
+  const table=points.map(k=>{
+    const s=snapshots.get(k),ms=descriptive(s.means),vs=descriptive(s.vars);
+    return {n:k,meanOfMeans:ms.mean,meanOfVars:vs.mean,varianceOfMeans:ms.var,varianceOfVars:vs.var,theoryMeanVar:VAR/k,theoryVarianceVar:theoreticalVarianceOfVariance(k)};
+  });
+  return {n,m,seed,table,traces,finalMeans,finalVars,means:descriptive(finalMeans),variances:descriptive(finalVars)};
+}
+function plotCurves(id,rows,series, xmin,xmax){
+  const {ctx,w,h}=drawCanvas(id);
+  const maxVal=Math.max(...rows.flatMap(r=>series.map(s=>r[s.key])))*1.15;
+  const {px,py}=axes(ctx,w,h,0,Math.max(maxVal,0.001),xmin,xmax,{xLabel:'n sistemi',yLabel:'Varianza'});
+  for(const {key,color,dashed} of series){
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dashed?[5,5]:[]);
+    ctx.beginPath();rows.forEach((r,i)=>i===0?ctx.moveTo(px(r.n),py(r[key])):ctx.lineTo(px(r.n),py(r[key])));ctx.stroke();ctx.setLineDash([]);
+  }
+}
+function drawConvergence() {
+  const s=latestSimulation;if(!s)return;
+  plotCurves('convergence2',s.table,[{key:'varianceOfMeans',color:'#306a9c'},{key:'theoryMeanVar',color:'#8a97a5',dashed:true}],2,Math.max(3,s.n));
+  plotCurves('convergenceVar2',s.table,[{key:'varianceOfVars',color:'#bd7a48'},{key:'theoryVarianceVar',color:'#8a97a5',dashed:true}],2,Math.max(3,s.n));
+}
+function drawTraces(){
+  const s=latestSimulation;if(!s)return;
+  const {ctx,w,h}=drawCanvas('trajectory2');
+  const all=s.traces.flat().map(r=>r.mean);
+  const ymin=Math.min(MU,...all),ymax=Math.max(MU,...all),span=Math.max(0.2,ymax-ymin);
+  const {px,py}=axes(ctx,w,h,ymin-0.1*span,ymax+0.1*span,1,Math.max(2,s.n),{xLabel:'n sistemi',yLabel:'Media'});
+  ctx.strokeStyle='#747e89';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(px(1),py(MU));ctx.lineTo(px(s.n),py(MU));ctx.stroke();ctx.setLineDash([]);
+  const colors=['#2e6da5','#bd7a48','#3a8a6d','#8e71aa','#b27a86'];
+  s.traces.forEach((trace,index)=>{ctx.strokeStyle=colors[index%colors.length];ctx.lineWidth=1.5;ctx.beginPath();trace.forEach((p,i)=>i===0?ctx.moveTo(px(p.n),py(p.mean)):ctx.lineTo(px(p.n),py(p.mean)));ctx.stroke();});
+}
+function renderPlots(){if(!latestSimulation)return;drawPMF();drawTraces();histogram('meanHist2',latestSimulation.finalMeans,MU);histogram('varHist2',latestSimulation.finalVars,VAR);drawConvergence();}
+function renderSimulation(s) {
+  $('avgMean2').textContent=fmt(s.means.mean);
+  $('avgVar2').textContent=fmt(s.variances.mean);
+  $('spreadMean2').textContent=fmt(s.means.var,5);
+  $('spreadVar2').textContent=fmt(s.variances.var,5);
+  $('spreadMeanTheory2').textContent='Teoria: '+fmt(VAR/s.n,5);
+  $('spreadVarTheory2').textContent='Teoria: '+fmt(theoreticalVarianceOfVariance(s.n),5);
+  $('comparisonTable2').replaceChildren();
+  for(const r of s.table){
+    const tr=document.createElement('tr');
+    [r.n,fmt(r.meanOfMeans),fmt(r.meanOfVars),fmt(r.varianceOfMeans,5),fmt(r.theoryMeanVar,5),fmt(r.varianceOfVars,5)].forEach(value=>{const td=document.createElement('td');td.textContent=String(value);tr.appendChild(td);});$('comparisonTable2').appendChild(tr);
+  }
+  const p=$('interpretation2');p.replaceChildren();
+  const lines=[
+    `Con ${s.n} sistemi e ${s.m} hacker, la media delle medie è ${fmt(s.means.mean)}, da confrontare con μ = 5. La media delle varianze è ${fmt(s.variances.mean)}, da confrontare con σ² = ${fmt(VAR)}.`,
+    `La variabilità delle medie tra hacker è ${fmt(s.means.var,5)} (teoria σ²/n = ${fmt(VAR/s.n,5)}). All'aumentare di n si riduce. Anche la variabilità della varianza campionaria diminuisce, ma la sua velocità dipende dalla distribuzione.`,
+    'Usare il divisore n − 1 rende la varianza campionaria non distorta: E[s²] = σ². Le medie delle stime su molti hacker tendono ai corrispondenti valori teorici al crescere di m.',
+    'Aumentare m migliora la precisione delle medie aggregate, ma non rende meno variabile la stima di ogni singolo hacker a n fisso.'
+  ];for(const line of lines){const para=document.createElement('p');para.textContent=line;p.appendChild(para)}
+  $('status2').textContent=`Simulati ${s.m} hacker × ${s.n} sistemi = ${s.m*s.n} punteggi; seme ${s.seed}.`;
+  renderPlots();
+}
+function runSimulation(){
+  const n=Number($('n2').value),m=Number($('m2').value),seed=Number($('seed2').value);
+  if(!Number.isInteger(n)||n<2||n>1500||!Number.isInteger(m)||m<2||m>1000||!Number.isSafeInteger(seed)||seed<1||seed>4294967295){$('status2').textContent='Controlla i parametri: 2 ≤ n ≤ 1500, 2 ≤ m ≤ 1000, seme intero positivo.';return;}
+  try{latestSimulation=simulate(n,m,seed);simulationDone=true;renderSimulation(latestSimulation)}catch(e){$('status2').textContent='Errore: '+e.message}
+}
+$('simulate2').onclick=runSimulation;
+$('seedNew2').onclick=()=>{$('seed2').value=String(1+Math.floor(Math.random()*4294967294));runSimulation()};
+$('smallN2').onclick=()=>{$('n2').value='10';runSimulation()};
+$('largeN2').onclick=()=>{$('n2').value='1000';runSimulation()};
+compute1();drawPMF();
+
+</script>
+</body>
+</html>
