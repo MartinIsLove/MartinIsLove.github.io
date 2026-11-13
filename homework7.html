@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework - Statistical Independence</title>
+<style>
+
+
+:root{font-family:Arial,Helvetica,sans-serif;color:#24292f;background:#f8f9fa;line-height:1.5}*{box-sizing:border-box}body{margin:0;font-size:15px}header{background:white;border-bottom:1px solid #dce0e5}header .container{padding-top:14px;padding-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}header h1{font-size:19px;margin:0}nav{display:flex;gap:15px;flex-wrap:wrap}a{color:#1559a2;text-decoration:none}a:hover{text-decoration:underline}nav a{font-size:14px;color:#46576a}nav a[aria-current=page]{font-weight:bold;color:#1559a2}.container{max-width:1020px;margin:auto;padding:0 22px}main{padding-top:28px!important;padding-bottom:42px!important}h2{font-size:23px;margin:0 0 14px}h3{font-size:18px;margin:0 0 13px}h4{font-size:16px;margin:0 0 10px}p{margin:0 0 13px}section.section,.section{background:white;padding:19px 20px;border:1px solid #e0e4e8;border-radius:5px;margin-top:18px}.note{border-left:3px solid #8295aa;padding:12px 15px;background:#eef2f6;color:#444;font-size:14px}.lead-text,.small-note{color:#606873}.small-note{font-size:13px}.small{font-size:13px!important}.row{display:flex;flex-wrap:wrap;margin-left:-9px;margin-right:-9px;row-gap:14px}.row>*{padding-left:9px;padding-right:9px;min-width:0;flex:1 0 100%}.col-auto{flex:0 0 auto}.col-6{flex:0 0 50%}@media(min-width:576px){.col-sm-3{flex:0 0 25%}.col-sm-4{flex:0 0 33.333%}.col-sm-5{flex:0 0 41.6667%}.col-sm-9{flex:0 0 75%}}@media(min-width:768px){.col-md-3{flex:0 0 25%}.col-md-4{flex:0 0 33.333%}.col-md-6{flex:0 0 50%}.col-md-8{flex:0 0 66.666%}}@media(min-width:992px){.col-lg-3{flex:0 0 25%}.col-lg-6{flex:0 0 50%}.col-lg-7{flex:0 0 58.333%}.col-lg-9{flex:0 0 75%}}.g-2{row-gap:8px}.g-3{row-gap:13px}.g-4{row-gap:19px}.form-control,.form-select,textarea,input,select{display:block;width:100%;padding:8px 10px;border:1px solid #cdd3da;border-radius:4px;background:white;color:#222;font:inherit}textarea{resize:vertical}label{font-size:14px;font-weight:600;display:block;margin-bottom:5px}input[type=checkbox]{display:inline;width:auto}.btn,button{border-radius:4px;border:1px solid #cbd2d9;background:#f8f9fa;color:#252d35;padding:8px 13px;font:inherit;font-size:14px;cursor:pointer}.btn:hover,button:hover{filter:brightness(.96)}button:disabled{opacity:.55;cursor:wait}.btn-primary{background:#225d9c;border-color:#225d9c;color:white}.btn-outline-primary{background:white;border-color:#225d9c;color:#225d9c}.btn-outline-secondary{background:white;border-color:#9aa2ac;color:#44515d}.btn-outline-danger{background:white;border-color:#aa3c3c;color:#aa3c3c}.btn-sm{padding:5px 9px;font-size:13px}.w-100{width:100%}.d-flex{display:flex}.flex-wrap{flex-wrap:wrap}.align-items-center{align-items:center}.align-items-end{align-items:flex-end}.gap-2{gap:8px}.gap-3{gap:12px}.mt-1{margin-top:5px!important}.mt-2{margin-top:11px!important}.mt-3{margin-top:17px!important}.mt-4{margin-top:23px!important}.mb-0{margin-bottom:0!important}.mb-2{margin-bottom:12px!important}.mb-3{margin-bottom:17px!important}.mono,code,pre,.code-value,.step-output{font-family:Consolas,'Courier New',monospace;overflow-wrap:anywhere}.code-value,.step-output,.output{padding:9px 11px;border-radius:4px;border:1px solid #e2e5e8;background:#f8fafc;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.result{padding:12px 14px;border:1px solid #c9dceb;border-radius:4px;background:#f2f7fb;overflow-wrap:anywhere}.fw-bold{font-weight:700}.text-danger{color:#ad3131!important}.text-success{color:#286d3d!important}.text-muted{color:#687480!important}.text-primary{color:#225d9c!important}.d-none{display:none!important}.table-responsive{overflow-x:auto}.table{width:100%;border-collapse:collapse;font-size:14px;margin:0}.table th,.table td{border:1px solid #e1e5e9;text-align:left;padding:7px 9px;vertical-align:top}.table th{background:#f4f6f8}.table-sm td,.table-sm th{padding:5px 8px}.chart,canvas{max-width:100%;height:auto;background:white;border:1px solid #e2e5e9;border-radius:3px}.chart{display:block;width:100%}#eccCanvas{width:100%}#logList{max-height:380px;overflow:auto;border:1px solid #e1e5e9}#logList .list-group-item{display:block;text-align:left;width:100%;background:#fff;border:0;border-bottom:1px solid #eee;padding:8px 10px;border-radius:0;font-size:13px}#logList .list-group-item.active{background:#e7f0f9}.list-group-item .d-flex{justify-content:space-between;gap:10px}.step{padding:12px 0;border-top:1px solid #eee}.step h4{margin-bottom:5px}.step-output>div+div{margin-top:6px}.secret-blur{filter:blur(5px);user-select:none}.grid-label{font-size:13px;font-weight:bold;color:#465261;margin:14px 0 4px}.anchor-nav a{display:inline-block;margin-right:12px;font-size:14px}footer{border-top:1px solid #e1e5e9;padding:17px 0;color:#66707c;font-size:13px}strong{font-weight:700}code{font-size:.9em}body a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #85b5e6;outline-offset:2px}@media(max-width:600px){.container{padding-left:15px;padding-right:15px}main{padding-top:18px!important}.section{padding:15px!important}header h1{font-size:17px}nav{gap:10px}}
+
+
+.formula{background:#f3f6f9;border:1px solid #e1e5e9;padding:12px 14px;margin:13px 0;border-radius:4px;font-family:Consolas,monospace;overflow-wrap:anywhere}
+.dataset-input{min-height:190px;font-family:Consolas,monospace;font-size:13px;line-height:1.65}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.metric{border:1px solid #e1e5e9;border-radius:4px;background:#f8fafc;padding:12px}
+.metric small{display:block;color:#606873;font-size:12px;margin-bottom:7px}
+.metric strong{font-size:19px;font-family:Consolas,monospace;display:block;overflow-wrap:anywhere}
+.metric p{font-size:12px;color:#66707c;margin:4px 0 0}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th,.data-table td{border:1px solid #e1e5e9;padding:8px 10px;text-align:right;vertical-align:middle}
+.data-table th:first-child,.data-table td:first-child{text-align:left}
+.data-table th{background:#f2f5f8;font-weight:600}
+.data-table tfoot td,.data-table tfoot th{background:#f7f9fb;font-weight:600}
+.data-table small{display:block;color:#687480;font-size:11px;margin-top:2px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.canvas-plot{width:100%;height:auto;display:block;border:1px solid #e1e5e9;border-radius:4px}
+.highlight{background:#f1f6fb;border-left:3px solid #6689ad;padding:11px 13px;margin:12px 0;font-size:14px;line-height:1.5}
+.warning{background:#fff9ee;border-left-color:#ba8a3e}
+.alert-error{background:#fff0f0;border-left:3px solid #b14646;padding:10px 12px;margin-top:12px}
+.legend{display:flex;align-items:center;gap:16px;font-size:12px;color:#536170;margin:8px 0}
+.legend i{display:inline-block;width:11px;height:9px;margin-right:5px;vertical-align:middle}
+.legend .observed{background:#225d9c}.legend .expected{background:#d69a69}
+.section h3{margin-bottom:12px}.section h4{margin-top:15px}
+.paired-note{font-size:13px;color:#5e6b76}
+@media(max-width:760px){.two-col{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Homework 2</a><a href="homework3.html">Homework 3</a><a href="homework4.html">Homework 4</a><a href="homework5.html">Homework 5</a><a href="homework6.html">Homework 6</a><a href="homework7.html" aria-current="page">Homework 7</a></nav></div></header>
+<main class="container">
+<h2>Homework — Statistical Independence</h2>
+<p class="lead-text">Studio dell'indipendenza fra due variabili categoriali X e F tramite frequenze e test chi-quadrato.</p>
+<section class="section">
+<h3>1. Inserimento dei dati</h3>
+<p>Inserisci coppie di osservazioni <code>X,F</code>, una per riga, oppure una tabella di frequenze con tre colonne <code>X,F,Count</code>. La prima riga di intestazione è facoltativa. Puoi modificare le categorie o caricare uno degli esempi.</p>
+<div class="two-col">
+<div><label for="dataInput">Dataset (CSV)</label><textarea id="dataInput" class="dataset-input" spellcheck="false" aria-label="Dataset bivariato in formato CSV"></textarea></div>
+<div>
+<label for="alpha">Livello di significatività α</label>
+<select id="alpha"><option value="0.05">0,05 (5%)</option><option value="0.01">0,01 (1%)</option><option value="0.10">0,10 (10%)</option></select>
+<p class="small-note mt-3">X e F devono essere variabili categoriali. Se hai dati numerici continui, devi prima dividerli in classi sensate: ogni valore distinto viene altrimenti trattato come una categoria.</p>
+<p class="small-note">Nell'esempio con Count, la terza colonna indica quante osservazioni hanno quella coppia di valori. Le frequenze sono contate a partire dai dati inseriti, non sono predefinite nel codice.</p>
+<div class="d-flex gap-2 flex-wrap mt-3"><button type="button" id="associatedExample">Esempio associato</button><button type="button" id="independentExample">Esempio senza associazione</button></div>
+<div class="mt-3"><button type="button" class="btn-primary" id="calculate">Calcola statistiche</button></div>
+</div>
+</div>
+<div id="error" class="alert-error" hidden role="alert"></div>
+</section>
+<section class="section" id="results" hidden>
+<h3>2. Tabella di contingenza e frequenze marginali</h3>
+<p>Ogni cella contiene il conteggio osservato; sotto compare la frequenza relativa rispetto al totale. L'ultima riga e l'ultima colonna contengono le frequenze marginali.</p>
+<div class="table-responsive" id="observedTable"></div>
+<div class="metrics">
+<div class="metric"><small>Osservazioni N</small><strong id="totalCount">–</strong></div>
+<div class="metric"><small>Statistiche χ²</small><strong id="chiValue">–</strong></div>
+<div class="metric"><small>Gradi di libertà</small><strong id="degrees">–</strong></div>
+<div class="metric"><small>p-value</small><strong id="pValue">–</strong></div>
+</div>
+<h3>3. Frequenze condizionate</h3>
+<div class="two-col"><div><h4>P(F | X)</h4><p class="paired-note">Per ogni riga X, si divide ciascuna cella per il totale della riga.</p><div class="table-responsive" id="rowConditionals"></div></div><div><h4>P(X | F)</h4><p class="paired-note">Per ogni colonna F, si divide ciascuna cella per il totale della colonna.</p><div class="table-responsive" id="columnConditionals"></div></div></div>
+<h3 class="mt-4">4. Frequenze attese sotto indipendenza</h3>
+<div class="formula">Eᵢⱼ = (totale riga i × totale colonna j) / N<br>χ² = Σᵢ Σⱼ (Oᵢⱼ − Eᵢⱼ)² / Eᵢⱼ<br>df = (numero righe − 1)(numero colonne − 1)</div>
+<p>La prima tabella mostra i conteggi attesi se X e F fossero indipendenti; la seconda il contributo di ogni cella alla statistica χ².</p>
+<div class="two-col"><div><h4>Conteggi attesi</h4><div class="table-responsive" id="expectedTable"></div></div><div><h4>Contributi al χ²</h4><div class="table-responsive" id="contributionTable"></div></div></div>
+<h4>Osservati e attesi</h4><p class="paired-note" id="chartNote"></p>
+<canvas id="comparisonChart" class="canvas-plot" width="920" height="310" role="img" aria-label="Confronto tra frequenze osservate e attese"></canvas>
+<div class="legend"><span><i class="observed"></i>Osservati</span><span><i class="expected"></i>Attesi</span></div>
+<h3 class="mt-4">5. Interpretazione del test</h3>
+<div id="interpretation" class="highlight" aria-live="polite"></div>
+<div id="assumptions" class="highlight warning"></div>
+</section>
+<section class="section">
+<h3>6. Concetti teorici e conclusioni</h3>
+<p><strong>Indipendenza in probabilità:</strong> due variabili aleatorie discrete X e F sono indipendenti quando, per ogni coppia di valori, P(X=x, F=f) = P(X=x)P(F=f). Equivalentemente, P(F=f | X=x) = P(F=f), quando la probabilità condizionante è positiva.</p>
+<p><strong>Indipendenza statistica:</strong> con dati osservati, non conosciamo le probabilità della popolazione. Il test χ² confronta i conteggi osservati con quelli attesi sotto l'ipotesi nulla H₀ di indipendenza. L'ipotesi alternativa H₁ è che esista un'associazione.</p>
+<p>Se il <em>p-value</em> è inferiore ad α, rifiutiamo H₀ e abbiamo evidenza statistica di associazione. Se è maggiore o uguale ad α, non rifiutiamo H₀, ma <strong>non possiamo concludere che le variabili siano certamente indipendenti</strong>.</p>
+<p><strong>Associazione e causalità:</strong> un'associazione significativa non dimostra che X causi F. Le due variabili possono essere influenzate da altri fattori, dal modo in cui sono stati raccolti i dati o da una relazione inversa.</p>
+<p class="small-note">Il test presuppone osservazioni indipendenti. Il p-value è una approssimazione asintotica: con conteggi attesi piccoli può essere poco affidabile. Per una tabella 2×2 molto sparsa è preferibile, ad esempio, il test esatto di Fisher.</p>
+</section>
+</main>
+<footer><div class="container">Esercitazione didattica · Test di indipendenza</div></footer>
+<script src="assets/hw7.js" defer></script>
+</body>
+</html>
