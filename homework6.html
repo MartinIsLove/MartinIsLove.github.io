@@ -16,11 +16,13 @@ header .container{max-width:1020px;padding-top:14px;padding-bottom:14px}
 header h1{font-size:19px}
 nav{gap:15px}
 nav a{font-size:14px}
-@media(max-width:600px){header h1{font-size:17px}nav{gap:10px}}
+nav a{white-space:nowrap}
+@media(max-width:760px){header .container{align-items:flex-start}header nav{width:100%;gap:8px 12px!important}}
+@media(max-width:600px){header h1{font-size:17px}nav{gap:8px 10px!important}}
 </style>
 </head>
 <body>
-<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Homework 2</a><a href="homework3.html">Homework 3</a><a href="homework4.html">Homework 4</a><a href="homework5.html">Homework 5</a><a href="homework6.html" aria-current="page">Homework 6</a><a href="homework7.html">Homework 7</a><a href="homework8.html">Homework 8</a></nav></div></header>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav aria-label="Navigazione principale"><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Homework 2</a><a href="homework3.html">Homework 3</a><a href="homework4.html">Homework 4</a><a href="homework5.html">Homework 5</a><a href="homework6.html" aria-current="page">Homework 6</a><a href="homework7.html">Homework 7</a><a href="homework8.html">Homework 8</a></nav></div></header>
 <main class="container">
 <h2>Homework — Integrazione numerica e CDF normale</h2>
 <p class="lead-text">Due esercizi su integrazione, approssimazioni numeriche e convergenza. I calcoli sono eseguiti in JavaScript, senza librerie esterne.</p>
