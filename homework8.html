@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homework 8 - Convergenza e inferenza bayesiana</title>
+  <link rel="stylesheet" href="assets/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    [hidden]{display:none!important}
+    .formula{background:#f3f6f9;border:1px solid #e1e5e9;padding:12px 14px;margin:12px 0;border-radius:4px;font-family:Consolas,"Courier New",monospace;overflow-wrap:anywhere}
+    .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .mode-card{border:1px solid #e1e5e9;border-radius:5px;padding:14px;background:#fafbfd}
+    .mode-card h4{margin-top:0}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+    .metric{border:1px solid #e1e5e9;border-radius:4px;background:#f8fafc;padding:12px}
+    .metric small{display:block;color:#606873;font-size:12px;margin-bottom:7px}
+    .metric strong{font-size:19px;font-family:Consolas,monospace;display:block;overflow-wrap:anywhere}
+    .tabs{display:flex;gap:8px;border-bottom:1px solid #dde3e8;margin-bottom:18px}
+    .tab{border:1px solid #dde3e8;border-bottom:0;border-radius:5px 5px 0 0;background:#f7f8fa;padding:8px 14px}
+    .tab[aria-selected="true"]{background:#fff;color:#225d9c;font-weight:700}
+    .canvas-plot{width:100%;height:auto;display:block}
+    .legend{display:flex;gap:18px;align-items:center;margin-top:8px;font-size:13px;color:#697480}
+    .legend i{display:inline-block;width:12px;height:9px;margin-right:5px}
+    .legend .observed{background:#225d9c}.legend .expected{background:#ce8951}
+    @media(max-width:760px){.mode-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<header><div class="container"><h1>Statistica e crittografia</h1><nav><a href="index.html">Home</a><a href="homework1.html">Homework 1</a><a href="homework2.html">Homework 2</a><a href="homework3.html">Homework 3</a><a href="homework4.html">Homework 4</a><a href="homework5.html">Homework 5</a><a href="homework6.html">Homework 6</a><a href="homework7.html">Homework 7</a><a href="homework8.html" aria-current="page">Homework 8</a></nav></div></header>
+<main class="container">
+  <h2>Homework 8 - Convergenza e inferenza bayesiana</h2>
+  <p class="lead-text">Modi di convergenza, Legge dei grandi numeri, Teorema centrale del limite e aggiornamento bayesiano.</p>
+
+  <div class="tabs" role="tablist" aria-label="Argomenti dell'esercizio">
+    <button id="tabConv" class="tab" type="button" role="tab" aria-selected="true" aria-controls="convergence">Convergenza e √n</button>
+    <button id="tabBayes" class="tab" type="button" role="tab" aria-selected="false" aria-controls="bayesian">Probabilità condizionata e Bayes</button>
+  </div>
+
+  <section id="convergence" class="section" role="tabpanel">
+    <h3>1. I principali modi di convergenza</h3>
+    <div class="mode-grid">
+      <article class="mode-card">
+        <h4>Convergenza in probabilità</h4>
+        <p><span class="mono">Xₙ →ᵖ X</span> se, per ogni ε &gt; 0, P(|Xₙ − X| &gt; ε) → 0. È il modo utilizzato dalla forma debole della Legge dei grandi numeri (LLN).</p>
+      </article>
+      <article class="mode-card">
+        <h4>Convergenza quasi certa (a.s.)</h4>
+        <p><span class="mono">Xₙ → X a.s.</span> se P({Xₙ → X}) = 1. La forma forte della LLN usa questa modalità più restrittiva.</p>
+      </article>
+      <article class="mode-card">
+        <h4>Convergenza in media quadratica</h4>
+        <p><span class="mono">Xₙ →L² X</span> se E[(Xₙ − X)²] → 0. Implica convergenza in probabilità. Per variabili integrabili al quadrato permette anche stime esplicite dell'errore tramite l'MSE.</p>
+      </article>
+      <article class="mode-card">
+        <h4>Convergenza in distribuzione</h4>
+        <p><span class="mono">Xₙ →ᵈ X</span> significa che le funzioni di ripartizione convergono nei punti di continuità del limite. È propria delle distribuzioni approssimate: per questo è il modo naturale del CLT.</p>
+      </article>
+    </div>
+    <p class="formula">quasi certa ⇒ in probabilità ⇒ in distribuzione<br>media quadratica ⇒ in probabilità ⇒ in distribuzione</p>
+    <p>Queste implicazioni valgono a livello generale sotto le ipotesi appropriate. Non sono invertibili: convergenza in distribuzione non implica quasi certezza o convergenza in L².</p>
+
+    <h3>2. Simulazione per LLN e CLT</h3>
+    <p>Consideriamo osservazioni Bernoulli indipendenti con P(X=1)=p. La media campionaria converge a p per LLN. Per il CLT,</p>
+    <p class="formula">(X̄ₙ − p) / (σ/√n) →ᵈ N(0,1), &nbsp; σ² = p(1−p).</p>
+    <div class="row g-3">
+      <div class="col-sm-4"><label for="convP">Probabilità p</label><input id="convP" type="number" min="0.01" max="0.99" step="0.01" value="0.50"></div>
+      <div class="col-sm-4"><label for="convN">Campioni n</label><input id="convN" type="number" min="20" max="2000" step="10" value="500"></div>
+      <div class="col-sm-4"><label for="convReps">Ripetizioni Monte Carlo</label><input id="convReps" type="number" min="100" max="5000" step="100" value="3000"></div>
+    </div>
+    <button id="runConv" class="btn btn-primary mt-3" type="button">Esegui simulazione</button>
+    <div class="metrics">
+      <div class="metric"><small>Valore atteso p</small><strong id="convMean">–</strong></div>
+      <div class="metric"><small>Media finale</small><strong id="convFinal">–</strong></div>
+      <div class="metric"><small>MSE teorico p(1−p)/n</small><strong id="convMse">–</strong></div>
+      <div class="metric"><small>MSE osservato</small><strong id="convObserved">–</strong></div>
+    </div>
+    <div class="two-col">
+      <div><h4>LLN: media campionaria</h4><canvas id="llnChart" class="canvas-plot" width="920" height="310" role="img" aria-label="Media campionaria convergente verso p"></canvas></div>
+      <div><h4>CLT: valori standardizzati</h4><canvas id="cltChart" class="canvas-plot" width="920" height="310" role="img" aria-label="Istogramma dei valori standardizzati con curva normale"></canvas></div>
+    </div>
+    <div id="convInterpretation" class="highlight" aria-live="polite"></div>
+
+    <h3>3. Perché compare √n</h3>
+    <p>Se X₁,…,Xₙ sono indipendenti e hanno la stessa varianza σ², allora</p>
+    <p class="formula">Var(Sₙ) = Var(ΣXᵢ) = ΣVar(Xᵢ) = nσ²</p>
+    <p>Il fattore n deriva dall'additività delle varianze. Per la media e il suo scarto dal valore atteso,</p>
+    <p class="formula">Var(X̄ₙ) = σ²/n, &nbsp; quindi &nbsp; sd(X̄ₙ) = σ/√n.</p>
+    <p>√n è quindi la scala che riporta la somma a una dispersione finita nel CLT: Sₙ − nμ diviso per σ√n converge a una normale standard. Non è un valore universale inserito arbitrariamente nelle formule: deriva dalla variabilità della somma e dalla radice quadrata necessaria a ottenere un'unità di variazione stabile.</p>
+    <p><strong>Indipendenza:</strong> senza indipendenza, Cov(Xᵢ,Xⱼ) non è nullo e Var(ΣXᵢ) = nσ² + 2Σᵢ&lt;ⱼCov(Xᵢ,Xⱼ). Può quindi mancare l'ordine √n. In inferenza statistica, una dimensione campionaria maggiore rende tipicamente gli intervalli e gli errori standard più piccoli, ma richiede che la selezione sia rappresentativa e che le osservazioni siano sostanzialmente indipendenti o correttamente modellate.</p>
+  </section>
+
+  <section id="bayesian" class="section" role="tabpanel" hidden>
+    <h3>4. Probabilità condizionata e teorema di Bayes</h3>
+    <p>Per una partizione degli eventi e un dato osservato D,</p>
+    <p class="formula">P(H|D) = P(D|H)P(H) / P(D) = P(D|H)P(H) / Σₖ P(D|Hₖ)P(Hₖ).</p>
+    <p>I tre componenti fondamentali sono: <strong>prior</strong> P(H), la conoscenza iniziale; <strong>likelihood</strong> P(D|H), la compatibilità del dato sotto ciascuna ipotesi; <strong>posterior</strong> P(H|D), la credibilità aggiornata dopo avere osservato D.</p>
+    <p>L'aggiornamento bayesiano combina prior ed evidenza usando il teorema di Bayes. Non sostituisce l'evidenza con una convinzione personale: una prior influenza il risultato tanto più quanto i dati sono pochi o poco informativi, mentre dati abbondanti tendono a ridurne l'effetto.</p>
+
+    <h3>5. Esempio medico</h3>
+    <p>Supponiamo che M indichi essere malati e + un test positivo. Si usano prevalenza, sensibilità e falso positivo.</p>
+    <div class="row g-3">
+      <div class="col-sm-4"><label for="priorDisease">Prevalenza prior P(M)</label><input id="priorDisease" type="number" min="0" max="1" step="0.01" value="0.01"></div>
+      <div class="col-sm-4"><label for="sensitivity">Sensibilità P(+|M)</label><input id="sensitivity" type="number" min="0" max="1" step="0.01" value="0.95"></div>
+      <div class="col-sm-4"><label for="specificity">Specificità P(−|sano)</label><input id="specificity" type="number" min="0" max="1" step="0.01" value="0.90"></div>
+    </div>
+    <button id="runDisease" class="btn btn-primary mt-3" type="button">Aggiorna probabilità</button>
+    <div class="metrics">
+      <div class="metric"><small>Prior P(M)</small><strong id="diseasePrior">–</strong></div>
+      <div class="metric"><small>Sensibilità</small><strong id="diseaseTp">–</strong></div>
+      <div class="metric"><small>Tasso falso positivo</small><strong id="diseaseFp">–</strong></div>
+      <div class="metric"><small>Posterior P(M|+)</small><strong id="diseasePosterior">–</strong></div>
+    </div>
+    <div id="diseaseText" class="highlight"></div>
+    <p>Questo esempio mostra perché la sensibilità da sola non basta: in una popolazione con bassa prevalenza, molti positivi possono essere falsi positivi.</p>
+
+    <h3>6. Prior coniugata Beta-Binomiale</h3>
+    <p>Per stimare una proporzione θ con dati binomiali, una scelta coniugata è θ ~ Beta(a,b). Una prior uniforme usa Beta(1,1); valori a=b grandi rappresentano una credenza concentrata attorno a 1/2. Osservando x successi su n prove,</p>
+    <p class="formula">θ | x ~ Beta(a+x, b+n−x).<br>Media prior = a/(a+b), &nbsp; media posterior = (a+x)/(a+b+n).</p>
+    <div class="row g-3">
+      <div class="col-sm-3"><label for="priorA">Prior a</label><input id="priorA" type="number" min="0.1" max="100" step="0.1" value="2"></div>
+      <div class="col-sm-3"><label for="priorB">Prior b</label><input id="priorB" type="number" min="0.1" max="100" step="0.1" value="2"></div>
+      <div class="col-sm-3"><label for="successes">Successi x</label><input id="successes" type="number" min="0" step="1" value="7"></div>
+      <div class="col-sm-3"><label for="trials">Prove n</label><input id="trials" type="number" min="1" step="1" value="10"></div>
+    </div>
+    <button id="runBeta" class="btn btn-primary mt-3" type="button">Aggiorna prior/posterior</button>
+    <div class="metrics">
+      <div class="metric"><small>Media prior</small><strong id="betaPriorMean">–</strong></div>
+      <div class="metric"><small>Media posterior</small><strong id="betaPostMean">–</strong></div>
+      <div class="metric"><small>Moda posterior</small><strong id="betaPostMode">–</strong></div>
+      <div class="metric"><small>P(θ &gt; 0,5 | dati)</small><strong id="betaProb">–</strong></div>
+    </div>
+    <canvas id="betaChart" class="canvas-plot" width="920" height="310" role="img" aria-label="Densità della prior e della posterior Beta"></canvas>
+    <div class="legend"><span><i style="background:#225d9c"></i>Prior</span><span><i style="background:#ce8951"></i>Posterior</span></div>
+    <div id="betaText" class="highlight"></div>
+
+    <h3>7. Vantaggi e limiti</h3>
+    <p><strong>Vantaggi:</strong> produce una distribuzione completa dei parametri, incorpora conoscenze prelimari, permette aggiornamenti successivi e gestisce esplicitamente l'incertezza.</p>
+    <p><strong>Limiti:</strong> una prior arbitraria può dominare dati scarsi; la likelihood può essere modellata male; il calcolo è difficile per modelli complessi e richiede metodi numerici o campionamento. In più prior informative legittime possono cambiare le conclusioni, quindi è importante effettuare analisi di sensibilità.</p>
+  </section>
+</main>
+<footer><div class="container">Esercitazione didattica · Convergenza e inferenza bayesiana</div></footer>
+<script src="assets/hw8.js" defer></script>
+</body>
+</html>
