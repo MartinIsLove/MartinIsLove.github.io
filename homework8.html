@@ -7,8 +7,15 @@
   <link rel="stylesheet" href="assets/bootstrap.min.css">
   <link rel="stylesheet" href="assets/style.css">
   <style>
+    *{box-sizing:border-box}
+    body{margin:0}
+    .container{width:100%!important;max-width:1020px!important;margin-right:auto!important;margin-left:auto!important;padding-right:22px!important;padding-left:22px!important}
+    header .container{padding-top:14px;padding-bottom:14px}
     [hidden]{display:none!important}
     .formula{background:#f3f6f9;border:1px solid #e1e5e9;padding:12px 14px;margin:12px 0;border-radius:4px;font-family:Consolas,"Courier New",monospace;overflow-wrap:anywhere}
+    .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+    .highlight{background:#f1f6fb;border-left:3px solid #6689ad;padding:11px 13px;margin:12px 0;font-size:14px;line-height:1.5}
+    .row{--bs-gutter-x:1.5rem}
     .mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .mode-card{border:1px solid #e1e5e9;border-radius:5px;padding:14px;background:#fafbfd}
     .mode-card h4{margin-top:0}
@@ -23,7 +30,8 @@
     .legend{display:flex;gap:18px;align-items:center;margin-top:8px;font-size:13px;color:#697480}
     .legend i{display:inline-block;width:12px;height:9px;margin-right:5px}
     .legend .observed{background:#225d9c}.legend .expected{background:#ce8951}
-    @media(max-width:760px){.mode-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.two-col{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.container{padding-right:15px!important;padding-left:15px!important}}
   </style>
 </head>
 <body>
